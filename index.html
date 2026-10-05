@@ -163,6 +163,8 @@
             role="img"
             aria-label="現在時刻の位置"
           >
+            <!-- Compatibility shim for clients that still have the previous app.js cached. -->
+            <span id="now-label" hidden aria-hidden="true">いま</span>
             <i aria-hidden="true"></i>
           </div>
         </div>
