@@ -12,13 +12,7 @@
     <link rel="stylesheet" href="./src/style.css" />
   </head>
   <body>
-    <main
-      class="clock"
-      id="clock"
-      data-night="true"
-      data-weather="clear"
-      data-density="large"
-    >
+    <main class="clock" id="clock" data-night="true" data-weather="clear">
       <div class="sky" aria-hidden="true">
         <div class="stars"></div>
         <div class="twilight"></div>
@@ -31,7 +25,19 @@
       <section class="main-panel">
         <header>
           <div class="brand">
-            <span class="brand-mark">◷</span> うつろい
+            <a
+              class="brand-mark github-link"
+              href="https://github.com/taogya/smart-desk-clock"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHubでソースコードを見る（別タブ）"
+              title="GitHub · smart-desk-clock"
+              ><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 .5C5.37.5 0 5.78 0 12.29c0 5.2 3.44 9.6 8.21 11.16.6.11.82-.25.82-.56 0-.28-.01-1.02-.02-2-3.34.71-4.04-1.58-4.04-1.58-.55-1.36-1.34-1.73-1.34-1.73-1.09-.73.08-.71.08-.71 1.21.08 1.84 1.22 1.84 1.22 1.07 1.8 2.81 1.28 3.5.98.11-.76.42-1.28.76-1.57-2.67-.3-5.47-1.31-5.47-5.83 0-1.29.47-2.34 1.23-3.17-.12-.3-.54-1.52.12-3.16 0 0 1.01-.32 3.3 1.21.96-.26 1.98-.39 3-.4 1.02 0 2.04.14 3 .4 2.28-1.53 3.29-1.21 3.29-1.21.66 1.64.24 2.86.12 3.16.77.83 1.23 1.88 1.23 3.17 0 4.53-2.81 5.52-5.49 5.81.43.36.81 1.09.81 2.2 0 1.59-.01 2.87-.01 3.26 0 .31.21.68.83.56C20.57 21.88 24 17.48 24 12.29 24 5.78 18.63.5 12 .5z"
+                /></svg
+            ></a>
+            うつろい
             <span class="brand-en">UTSUROI</span>
           </div>
           <div class="controls">
@@ -151,8 +157,13 @@
         <div class="timeline" id="timeline">
           <div class="timeline-layers" id="timeline-layers"></div>
           <div class="past-shade" aria-hidden="true"></div>
-          <div class="now-marker" id="now-marker">
-            <span id="now-label">いま</span><i></i>
+          <div
+            class="now-marker"
+            id="now-marker"
+            role="img"
+            aria-label="現在時刻の位置"
+          >
+            <i aria-hidden="true"></i>
           </div>
         </div>
         <div class="legend">
@@ -177,21 +188,26 @@
         </div>
         <fieldset class="display-options">
           <legend>見え方</legend>
-          <div class="density-options">
-            <button
-              type="button"
-              data-density-choice="large"
-              aria-pressed="true"
-            >
-              大きめ</button
-            ><button
-              type="button"
-              data-density-choice="standard"
-              aria-pressed="false"
-            >
-              標準
-            </button>
+          <label for="text-size"
+            >文字サイズ <output id="text-size-value">100%</output></label
+          >
+          <input
+            type="range"
+            id="text-size"
+            min="85"
+            max="120"
+            step="1"
+            value="100"
+            aria-describedby="text-size-hint"
+          />
+          <div class="size-presets">
+            <button type="button" data-size-preset="85">小さめ</button
+            ><button type="button" data-size-preset="100">標準</button
+            ><button type="button" data-size-preset="120">大きめ</button>
           </div>
+          <p id="text-size-hint" class="setting-note">
+            時計・天気・太陽と月の文字をまとめて調整します。
+          </p>
           <label for="panel-width"
             >天気欄の幅 <output id="panel-width-value">25%</output></label
           ><input

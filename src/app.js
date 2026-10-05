@@ -140,7 +140,7 @@ function tick() {
     weekday: "long",
   }).format(now);
   updateTimeline(data, now, location.timezone);
-  $("now-label").textContent = "いま";
+
   if (lastMinute !== `${p.key}:${p.hour}:${p.minute}`) {
     renderWeather(now);
     lastMinute = `${p.key}:${p.hour}:${p.minute}`;
@@ -233,28 +233,42 @@ document.addEventListener("visibilitychange", () => {
     if (!updated || Date.now() - updated > 900000) loadWeather();
   }
 });
-let display = read("utsuroi-display") ?? { density: "large", width: 25 };
+let display = read("utsuroi-display") ?? { textSize: 100, width: 25 };
+// Preserve the old visual size when migrating saved two-step settings.
+if (!Number.isFinite(display.textSize))
+  display.textSize = display.density === "standard" ? 85 : 100;
+delete display.density;
 function applyDisplay() {
-  display.density = display.density === "standard" ? "standard" : "large";
+  display.textSize = Math.max(
+    85,
+    Math.min(120, Number(display.textSize) || 100),
+  );
   display.width = Math.max(23, Math.min(30, Number(display.width) || 25));
-  $("clock").dataset.density = display.density;
+  $("clock").style.setProperty("--text-scale", display.textSize / 100);
   $("clock").style.setProperty("--forecast-width", `${display.width * 12.8}px`);
+  $("text-size").value = display.textSize;
+  $("text-size-value").textContent = `${display.textSize}%`;
+  $("text-size").setAttribute("aria-valuetext", `${display.textSize}%`);
   $("panel-width").value = display.width;
   $("panel-width-value").textContent = `${display.width}%`;
   document
-    .querySelectorAll("[data-density-choice]")
+    .querySelectorAll("[data-size-preset]")
     .forEach((button) =>
       button.setAttribute(
         "aria-pressed",
-        String(button.dataset.densityChoice === display.density),
+        String(+button.dataset.sizePreset === display.textSize),
       ),
     );
   save("utsuroi-display", display);
 }
-document.querySelectorAll("[data-density-choice]").forEach(
+$("text-size").oninput = () => {
+  display.textSize = +$("text-size").value;
+  applyDisplay();
+};
+document.querySelectorAll("[data-size-preset]").forEach(
   (button) =>
     (button.onclick = () => {
-      display.density = button.dataset.densityChoice;
+      display.textSize = +button.dataset.sizePreset;
       applyDisplay();
     }),
 );
@@ -263,7 +277,7 @@ $("panel-width").oninput = () => {
   applyDisplay();
 };
 $("reset-display").onclick = () => {
-  display = { density: "large", width: 25 };
+  display = { textSize: 100, width: 25 };
   applyDisplay();
 };
 let hideControls;

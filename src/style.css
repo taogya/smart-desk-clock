@@ -1387,3 +1387,250 @@ dialog {
     height: 18px;
   }
 }
+/* Continuous type scale: 100% is the original large layout. */
+.clock {
+  --text-scale: 1;
+}
+.github-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  color: var(--muted);
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+.github-link svg {
+  width: 25px;
+  height: 25px;
+}
+.github-link:hover {
+  color: var(--accent);
+  background: #ffffff0c;
+}
+.time-block {
+  margin-top: calc(32px - (var(--text-scale) - 1) * 120px);
+}
+.date {
+  font-size: calc(32px * var(--text-scale));
+}
+.time-line {
+  height: calc(224px * var(--text-scale));
+}
+#time {
+  font-size: calc(216px * var(--text-scale));
+}
+#seconds {
+  font-size: calc(34px * var(--text-scale));
+}
+.conditions {
+  margin-top: calc(22px - (var(--text-scale) - 1) * 60px);
+  height: calc(100px * var(--text-scale));
+}
+.temperature {
+  font-size: calc(78px * var(--text-scale));
+}
+.condition-detail {
+  font-size: calc(21px * var(--text-scale));
+}
+.high-low {
+  font-size: calc(23px * var(--text-scale));
+}
+.humidity {
+  font-size: calc(48px * var(--text-scale));
+}
+.humidity small {
+  font-size: calc(23px * var(--text-scale));
+}
+.metric-label {
+  font-size: calc(16px * var(--text-scale));
+  top: calc(57px * var(--text-scale));
+}
+.celestial {
+  grid-template-columns: minmax(0, 1fr) calc(240px * var(--text-scale));
+}
+#sun-path {
+  height: calc(96px - (var(--text-scale) - 1) * 170px);
+}
+.sun-labels,
+.sun-labels b {
+  font-size: calc(26px * var(--text-scale));
+}
+.sun-labels small {
+  font-size: calc(15px * var(--text-scale));
+}
+.sun-labels .day-phase {
+  font-size: calc(16px * var(--text-scale));
+}
+.moon-section > div {
+  font-size: calc(20px * var(--text-scale));
+}
+.moon-section small {
+  font-size: calc(16px * var(--text-scale));
+}
+footer {
+  margin-top: calc(20px - (var(--text-scale) - 1) * 50px);
+}
+.forecast-heading {
+  font-size: calc(24px * var(--text-scale));
+}
+.forecast-heading small {
+  font-size: calc(14px * var(--text-scale));
+}
+.hour-row .hour {
+  font-size: calc(25px * var(--text-scale));
+}
+.hour-row .hour small {
+  font-size: calc(13px * var(--text-scale));
+}
+.hour-row .hour-temp {
+  font-size: calc(30px * var(--text-scale));
+}
+.hour-row .rain-chance {
+  font-size: calc(17px * var(--text-scale));
+}
+.hour-row .day-label {
+  font-size: calc(14px * var(--text-scale));
+}
+.legend {
+  font-size: calc(14px * var(--text-scale));
+}
+.now-marker {
+  height: 3px;
+  background: linear-gradient(90deg, #f6db9f 0, #f6db9f80 40%, #f6db9f22 100%);
+  box-shadow: 0 0 15px #efc77b22;
+}
+.now-marker i {
+  width: 21px;
+  height: 21px;
+  left: 17px;
+  top: -9px;
+  background: #fff7dc;
+  border: 4px solid #213c46;
+  box-shadow:
+    0 0 0 3px #ffdf9d,
+    0 0 15px #f3cb8280;
+}
+.size-presets {
+  display: flex;
+  gap: 8px;
+  margin-top: 7px;
+}
+.size-presets button {
+  flex: 1;
+  border: 1px solid #536e76;
+  padding: 9px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.size-presets button[aria-pressed="true"] {
+  color: #19313b;
+  background: #e6bf79;
+  border-color: #e6bf79;
+}
+@media (max-width: 700px) and (orientation: portrait) {
+  .github-link {
+    width: 23px;
+    height: 27px;
+  }
+  .github-link svg {
+    width: 21px;
+    height: 21px;
+  }
+  .time-block {
+    margin-top: 45px;
+  }
+  .date {
+    font-size: calc(17px * var(--text-scale));
+  }
+  .time-line {
+    height: auto;
+    gap: 4px;
+  }
+  #time {
+    font-size: calc(14vw * var(--text-scale));
+  }
+  #seconds {
+    font-size: calc(16px * var(--text-scale));
+  }
+  .conditions {
+    margin-top: 25px;
+    height: auto;
+  }
+  .temperature {
+    font-size: calc(40px * var(--text-scale));
+  }
+  .condition-detail {
+    font-size: calc(11px * var(--text-scale));
+  }
+  .high-low {
+    font-size: calc(12px * var(--text-scale));
+  }
+  .humidity {
+    font-size: calc(26px * var(--text-scale));
+  }
+  .humidity small {
+    font-size: calc(15px * var(--text-scale));
+  }
+  .metric-label {
+    font-size: calc(11px * var(--text-scale));
+  }
+  .celestial {
+    grid-template-columns: 1fr;
+  }
+  #sun-path {
+    height: auto;
+  }
+  .sun-labels,
+  .sun-labels b {
+    font-size: calc(15px * var(--text-scale));
+  }
+  .sun-labels small {
+    font-size: calc(10px * var(--text-scale));
+  }
+  .sun-labels .day-phase {
+    font-size: calc(9px * var(--text-scale));
+  }
+  .moon-section > div {
+    font-size: calc(13px * var(--text-scale));
+  }
+  .moon-section small {
+    font-size: calc(10px * var(--text-scale));
+  }
+  .forecast-heading {
+    font-size: calc(12px * var(--text-scale));
+  }
+  .forecast-heading small {
+    font-size: calc(9px * var(--text-scale));
+  }
+  .hour-row .hour {
+    font-size: calc(12px * var(--text-scale));
+  }
+  .hour-row .hour-temp {
+    font-size: calc(14px * var(--text-scale));
+  }
+  .hour-row .day-label {
+    font-size: calc(9px * var(--text-scale));
+  }
+  .legend {
+    font-size: calc(8px * var(--text-scale));
+    gap: 5px;
+  }
+  .now-marker {
+    height: 2px;
+  }
+  .now-marker i {
+    width: 15px;
+    height: 15px;
+    left: 7px;
+    top: -6px;
+    border-width: 3px;
+    box-shadow:
+      0 0 0 2px #ffdf9d,
+      0 0 12px #f3cb8280;
+  }
+}

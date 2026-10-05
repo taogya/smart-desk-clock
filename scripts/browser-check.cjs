@@ -105,12 +105,13 @@ fs.mkdirSync("artifacts", { recursive: true });
   await page.getByRole("button", { name: "表示設定", exact: true }).focus();
   await page.getByRole("button", { name: "表示設定", exact: true }).click();
   await page.locator("#panel-width").fill("30");
-  await page.getByRole("button", { name: "標準", exact: true }).click();
+  await page.getByRole("button", { name: "小さめ", exact: true }).click();
   await page.getByRole("button", { name: "閉じる", exact: true }).click();
   await page.reload();
-  assert.equal(
-    await page.locator("#clock").getAttribute("data-density"),
-    "standard",
+  assert.ok(
+    (await page.locator("#clock").getAttribute("style")).includes(
+      "--text-scale: 0.85",
+    ),
   );
   assert.ok(
     (await page.locator("#clock").getAttribute("style")).includes("384px"),
@@ -120,11 +121,62 @@ fs.mkdirSync("artifacts", { recursive: true });
   await page
     .getByRole("button", { name: "表示設定を戻す", exact: true })
     .click();
+  // Exercise both independent sliders at their extremes on the actual 7-inch resolution.
+  for (const size of [85, 100, 120]) {
+    for (const width of [23, 30]) {
+      await page.locator("#text-size").fill(String(size));
+      await page.locator("#panel-width").fill(String(width));
+      await page.getByRole("button", { name: "閉じる", exact: true }).click();
+      await page.screenshot({
+        path: `artifacts/clock-size-${size}-width-${width}.png`,
+      });
+      const geometry = await page.evaluate(() => {
+        const rect = (selector) =>
+          document.querySelector(selector).getBoundingClientRect();
+        const time = rect(".time-line"),
+          conditions = rect(".conditions"),
+          celestial = rect(".celestial"),
+          main = rect(".main-panel");
+        return {
+          timeBottom: time.bottom,
+          conditionsTop: conditions.top,
+          conditionsBottom: conditions.bottom,
+          celestialTop: celestial.top,
+          clockRight: rect("#seconds").right,
+          mainRight: main.right,
+        };
+      });
+      assert.ok(
+        geometry.timeBottom <= geometry.conditionsTop + 1,
+        JSON.stringify(geometry),
+      );
+      assert.ok(
+        geometry.conditionsBottom <= geometry.celestialTop + 1,
+        JSON.stringify(geometry),
+      );
+      assert.ok(
+        geometry.clockRight < geometry.mainRight,
+        JSON.stringify(geometry),
+      );
+      await page.getByRole("button", { name: "表示設定", exact: true }).focus();
+      await page.getByRole("button", { name: "表示設定", exact: true }).click();
+    }
+  }
+  await page
+    .getByRole("button", { name: "表示設定を戻す", exact: true })
+    .click();
+  assert.equal((await page.locator("#now-marker").textContent()).trim(), "");
+  assert.equal(
+    await page.locator(".github-link").getAttribute("href"),
+    "https://github.com/taogya/smart-desk-clock",
+  );
   await page.locator("#city").fill("Tokyo");
   await page.getByRole("button", { name: "検索", exact: true }).click();
   await page.getByRole("button", { name: "東京 — 日本" }).click();
   assert.equal(await page.locator("#location-name").textContent(), "東京");
-  await page.waitForFunction(() => document.getElementById("temperature").textContent === "19");
+  await page.waitForFunction(
+    () => document.getElementById("temperature").textContent === "19",
+  );
   await page.clock.setSystemTime(new Date("2026-10-05T14:59:58Z"));
   await page.clock.runFor(1000);
   const marker = async () =>
@@ -137,14 +189,21 @@ fs.mkdirSync("artifacts", { recursive: true });
       .locator('.hour-row[data-epoch="1791212400"]')
       .last()
       .evaluate((e) => e.getBoundingClientRect().y);
-  await page.waitForFunction(() => document.getElementById("time").textContent === "23:59");
-  await page.screenshot({path:"artifacts/clock-before-midnight.png"});
+  await page.waitForFunction(
+    () => document.getElementById("time").textContent === "23:59",
+  );
+  await page.screenshot({ path: "artifacts/clock-before-midnight.png" });
   const before = await position();
   await page.clock.runFor(3000);
-  await page.waitForFunction(() => document.getElementById("time").textContent === "00:00");
-  await page.screenshot({path:"artifacts/clock-after-midnight.png"});
+  await page.waitForFunction(
+    () => document.getElementById("time").textContent === "00:00",
+  );
+  await page.screenshot({ path: "artifacts/clock-after-midnight.png" });
   const after = await position();
-  assert.ok(Math.abs(after - before) < 1, `midnight does not reset timeline: before=${before}, after=${after}`);
+  assert.ok(
+    Math.abs(after - before) < 1,
+    `midnight does not reset timeline: before=${before}, after=${after}`,
+  );
   assert.ok(Math.abs((await marker()) - 1 / 3) < 0.005);
   await page.screenshot({ path: "artifacts/clock-midnight.png" });
   for (const [time, name] of [
