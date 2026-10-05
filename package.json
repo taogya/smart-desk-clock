@@ -1,1 +1,11 @@
-{"name":"smart-desk-clock","version":"1.0.0","private":true,"type":"module","scripts":{"test":"node --test","dev":"python3 -m http.server 5173","build":"node scripts/build.mjs"}}
+{
+  "name": "smart-desk-clock",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "dev": "python3 -m http.server 5173",
+    "build": "node scripts/build.mjs"
+  }
+}
