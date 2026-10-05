@@ -84,6 +84,16 @@ fs.mkdirSync("artifacts", { recursive: true });
     [390, 844, "mobile"],
   ]) {
     await page.setViewportSize({ width, height });
+    // Viewport changes resolve before the browser dispatches resize on some runners.
+    await page.waitForFunction(() => {
+      const box = document.getElementById("clock").getBoundingClientRect();
+      return (
+        box.x >= -1 &&
+        box.y >= -1 &&
+        box.right <= innerWidth + 1 &&
+        box.bottom <= innerHeight + 1
+      );
+    });
     const box = await page.locator("#clock").boundingBox();
     assert.ok(
       box.x >= -1 && box.y >= -1 && box.x + box.width <= width + 1,
