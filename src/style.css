@@ -1649,8 +1649,26 @@ footer {
     font-size: calc(10px * var(--text-scale));
   }
   .pressure-summary {
-    min-height: 40px;
-    gap: 4px;
+    min-height: 82px;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-areas:
+      "reading trend"
+      "face face";
+    justify-content: center;
+    align-content: center;
+    column-gap: 4px;
+    row-gap: 2px;
+  }
+  .pressure-reading {
+    grid-area: reading;
+  }
+  .pressure-trend {
+    grid-area: trend;
+  }
+  .pressure-face {
+    grid-area: face;
+    justify-self: center;
   }
   .pressure-reading b {
     font-size: calc(16px * var(--text-scale));
