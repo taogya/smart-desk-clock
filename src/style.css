@@ -447,8 +447,8 @@ footer a {
   color: #8dc5ca;
 }
 .pressure-face {
-  width: 55px;
-  height: 55px;
+  width: 64px;
+  height: 64px;
   display: inline-flex;
   flex: 0 0 auto;
   color: #dce5e1;
@@ -1525,8 +1525,8 @@ footer {
   font-size: calc(28px * var(--text-scale));
 }
 .pressure-face {
-  width: calc(55px * var(--text-scale));
-  height: calc(55px * var(--text-scale));
+  width: calc(64px * var(--text-scale));
+  height: calc(64px * var(--text-scale));
 }
 .hour-row .hour {
   font-size: calc(25px * var(--text-scale));
@@ -1662,8 +1662,8 @@ footer {
     font-size: calc(17px * var(--text-scale));
   }
   .pressure-face {
-    width: calc(34px * var(--text-scale));
-    height: calc(34px * var(--text-scale));
+    width: calc(38px * var(--text-scale));
+    height: calc(38px * var(--text-scale));
   }
   .hour-row .hour {
     font-size: calc(12px * var(--text-scale));
