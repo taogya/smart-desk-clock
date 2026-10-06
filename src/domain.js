@@ -27,7 +27,7 @@ export function parts(date, timeZone) {
 }
 export function weather(code) {
   if (code === 0)
-    return { kind: "clear", label: "晴れ", color: "#e6bf79", icon: "sun" };
+    return { kind: "clear", label: "晴れ", color: "#efb34f", icon: "sun" };
   if (code === 1 || code === 2)
     return {
       kind: "partly",
@@ -44,7 +44,7 @@ export function weather(code) {
   if ([95, 96, 99].includes(code))
     return { kind: "storm", label: "雷雨", color: "#8c85b7", icon: "storm" };
   if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code))
-    return { kind: "rain", label: "雨", color: "#609abe", icon: "rain" };
+    return { kind: "rain", label: "雨", color: "#4389bd", icon: "rain" };
   return {
     kind: "unknown",
     label: "天気情報なし",
@@ -93,6 +93,79 @@ export const number = (value) =>
   typeof value === "number" && Number.isFinite(value)
     ? Math.round(value).toString()
     : "--";
+
+export function pressureSignal(data, now) {
+  const h = data?.hourly,
+    times = h?.time,
+    pressures = h?.pressure_msl;
+  if (!Array.isArray(times) || !Array.isArray(pressures) || !times.length)
+    return {
+      pressure: Number.isFinite(data?.current?.pressure_msl)
+        ? data.current.pressure_msl
+        : null,
+      trend: "steady",
+      level: "unknown",
+      maxDrop: null,
+      trendDelta: null,
+    };
+
+  const nowSeconds = now.getTime() / 1000;
+  let start = times.findIndex((t) => t >= nowSeconds);
+  if (start < 0) start = times.length - 1;
+
+  const pressure = Number.isFinite(data?.current?.pressure_msl)
+    ? data.current.pressure_msl
+    : Number.isFinite(pressures[start])
+      ? pressures[start]
+      : null;
+  const indexAtOrAfter = (epoch, from = start) => {
+    for (let i = from; i < times.length; i++)
+      if (times[i] >= epoch && Number.isFinite(pressures[i])) return i;
+    return -1;
+  };
+
+  const trendEnd = indexAtOrAfter(times[start] + 3 * 3600, start);
+  const trendDelta =
+    trendEnd >= 0 && Number.isFinite(pressures[start])
+      ? pressures[trendEnd] - pressures[start]
+      : null;
+  const trend =
+    trendDelta == null
+      ? "steady"
+      : trendDelta >= 1.5
+        ? "up"
+        : trendDelta <= -1.5
+          ? "down"
+          : "steady";
+
+  const horizon = nowSeconds + 12 * 3600;
+  let maxDrop = 0,
+    foundWindow = false;
+  for (let i = start; i < times.length; i++) {
+    if (!Number.isFinite(pressures[i]) || times[i] + 6 * 3600 > horizon) continue;
+    const end = indexAtOrAfter(times[i] + 6 * 3600, i + 1);
+    if (end < 0 || times[end] > horizon) continue;
+    maxDrop = Math.min(maxDrop, pressures[end] - pressures[i]);
+    foundWindow = true;
+  }
+
+  // There is no clinical standard threshold. These bands are a conservative
+  // visualization of forecast pressure decline, not a medical diagnosis.
+  const level = !foundWindow
+    ? "unknown"
+    : maxDrop <= -5
+      ? "pain"
+      : maxDrop <= -2
+        ? "watch"
+        : "smile";
+  return {
+    pressure,
+    trend,
+    level,
+    maxDrop: foundWindow ? maxDrop : null,
+    trendDelta,
+  };
+}
 
 export const TIMELINE_HOURS = 18;
 export const PAST_HOURS = 6;

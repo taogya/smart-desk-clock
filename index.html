@@ -151,8 +151,19 @@
         </footer>
       </section>
       <aside class="forecast-panel" aria-label="過去6時間と未来12時間の天気">
-        <div class="forecast-heading">
-          <span>空のうつろい</span><small>過去6時間 / これから12時間</small>
+        <div
+          class="pressure-summary"
+          id="pressure-summary"
+          role="img"
+          aria-label="気圧情報を取得中"
+          data-trend="steady"
+          data-level="unknown"
+        >
+          <span class="pressure-reading"
+            ><b id="pressure-value">--</b><small>hPa</small></span
+          ><span class="pressure-trend" id="pressure-trend" aria-hidden="true"
+            >→</span
+          ><span class="pressure-face" id="pressure-face" aria-hidden="true"></span>
         </div>
         <div class="timeline" id="timeline">
           <div class="timeline-layers" id="timeline-layers"></div>

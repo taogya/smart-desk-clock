@@ -29,8 +29,8 @@ export async function forecast(loc, signal) {
     timeformat: "unixtime",
     forecast_days: "3",
     past_days: "1",
-    current: "temperature_2m,relative_humidity_2m,weather_code,is_day",
-    hourly: "temperature_2m,weather_code,precipitation_probability,is_day",
+    current: "temperature_2m,relative_humidity_2m,pressure_msl,weather_code,is_day",
+    hourly: "temperature_2m,pressure_msl,weather_code,precipitation_probability,is_day",
     daily: "sunrise,sunset,temperature_2m_max,temperature_2m_min",
   });
   const data = await getJSON(

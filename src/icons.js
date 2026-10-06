@@ -24,3 +24,22 @@ export function icon(type, night = false) {
     shape = '<path d="M25 23a8 8 0 1 1 12 7c-5 3-5 4-5 9m0 8v1"/>';
   return `<svg viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">${shape}</svg>`;
 }
+
+export function pressureFace(level) {
+  const ring = '<circle cx="32" cy="32" r="21"/>';
+  let face;
+  if (level === "smile") {
+    face =
+      '<path d="M22 27c2-2 4-2 6 0m8 0c2-2 4-2 6 0"/><path d="M22 36c2 9 18 9 20 0Z" fill="currentColor" fill-opacity=".12"/>';
+  } else if (level === "watch") {
+    face =
+      '<circle cx="25" cy="28" r="1.2" fill="currentColor" stroke="none"/><circle cx="39" cy="28" r="1.2" fill="currentColor" stroke="none"/><path d="M25 39c4-2 10-2 14 0"/>';
+  } else if (level === "pain") {
+    face =
+      '<path d="m20 24 8 3m8 0 8-3M21 31l6 5m0-5-6 5"/><path d="M37 32c2-2 4-2 6 0"/><path d="M24 42c4-5 12-5 16 0"/><path d="m55 21 3-3m-2 8 4-1"/>';
+  } else {
+    face =
+      '<circle cx="25" cy="29" r="1.2" fill="currentColor" stroke="none"/><circle cx="39" cy="29" r="1.2" fill="currentColor" stroke="none"/><path d="M26 40h12"/>';
+  }
+  return `<svg viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ring}${face}</svg>`;
+}

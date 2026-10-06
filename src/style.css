@@ -412,21 +412,60 @@ footer a {
   display: flex;
   flex-direction: column;
 }
-.forecast-heading {
-  font-size: 17px;
-  letter-spacing: 0.12em;
+.pressure-summary {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-variant-numeric: tabular-nums;
 }
-.forecast-heading small {
-  display: block;
-  font-size: 11px;
+.pressure-reading {
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+.pressure-reading b {
+  font-size: 21px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+.pressure-reading small {
+  margin-left: 3px;
+  font-size: 10px;
   color: var(--muted);
-  letter-spacing: 0.08em;
-  margin-top: 8px;
+}
+.pressure-trend {
+  font-size: 24px;
+  line-height: 1;
+  color: var(--muted);
+}
+.pressure-summary[data-trend="down"] .pressure-trend {
+  color: #e8b56f;
+}
+.pressure-summary[data-trend="up"] .pressure-trend {
+  color: #8dc5ca;
+}
+.pressure-face {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  color: #dce5e1;
+}
+.pressure-face svg {
+  width: 100%;
+  height: 100%;
+}
+.pressure-summary[data-level="smile"] .pressure-face {
+  color: #e6c884;
+}
+.pressure-summary[data-level="pain"] .pressure-face {
+  color: #e3aa86;
 }
 .timeline {
   position: relative;
   flex: 1;
-  margin-top: 24px;
+  margin-top: 16px;
   margin-bottom: 24px;
   margin-right: 0;
 }
@@ -523,13 +562,13 @@ footer a {
   border-radius: 50%;
 }
 .clear {
-  background: #e6bf79;
+  background: #efb34f;
 }
 .cloudy {
   background: #929fa7;
 }
 .wet {
-  background: #609abe;
+  background: #4389bd;
 }
 dialog {
   width: min(480px, 92vw);
@@ -1475,11 +1514,18 @@ dialog {
 footer {
   margin-top: calc(20px - (var(--text-scale) - 1) * 50px);
 }
-.forecast-heading {
+.pressure-reading b {
+  font-size: calc(21px * var(--text-scale));
+}
+.pressure-reading small {
+  font-size: calc(10px * var(--text-scale));
+}
+.pressure-trend {
   font-size: calc(24px * var(--text-scale));
 }
-.forecast-heading small {
-  font-size: calc(14px * var(--text-scale));
+.pressure-face {
+  width: calc(38px * var(--text-scale));
+  height: calc(38px * var(--text-scale));
 }
 .hour-row .hour {
   font-size: calc(25px * var(--text-scale));
@@ -1601,11 +1647,22 @@ footer {
   .moon-section small {
     font-size: calc(10px * var(--text-scale));
   }
-  .forecast-heading {
+  .pressure-summary {
+    min-height: 28px;
+    gap: 4px;
+  }
+  .pressure-reading b {
     font-size: calc(12px * var(--text-scale));
   }
-  .forecast-heading small {
-    font-size: calc(9px * var(--text-scale));
+  .pressure-reading small {
+    font-size: calc(7px * var(--text-scale));
+  }
+  .pressure-trend {
+    font-size: calc(15px * var(--text-scale));
+  }
+  .pressure-face {
+    width: calc(24px * var(--text-scale));
+    height: calc(24px * var(--text-scale));
   }
   .hour-row .hour {
     font-size: calc(12px * var(--text-scale));

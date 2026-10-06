@@ -6,8 +6,9 @@ import {
   moonPath,
   dayIndex,
   number,
+  pressureSignal,
 } from "./domain.js";
-import { icon } from "./icons.js";
+import { icon, pressureFace } from "./icons.js";
 import { updateTimeline } from "./timeline.js";
 import { read, save, cacheKey, forecast, searchCities } from "./api.js";
 const $ = (id) => document.getElementById(id);
@@ -99,6 +100,33 @@ function renderWeather(now) {
   $("weather-label").textContent = w.label;
   $("temperature").textContent = number(current?.temperature_2m);
   $("humidity").textContent = number(current?.relative_humidity_2m);
+  const pressure = pressureSignal(data, now);
+  $("pressure-value").textContent = Number.isFinite(pressure.pressure)
+    ? Math.round(pressure.pressure)
+    : "--";
+  $("pressure-trend").textContent =
+    pressure.trend === "up" ? "↗" : pressure.trend === "down" ? "↘" : "→";
+  $("pressure-face").innerHTML = pressureFace(pressure.level);
+  $("pressure-summary").dataset.trend = pressure.trend;
+  $("pressure-summary").dataset.level = pressure.level;
+  const trendLabel =
+    pressure.trend === "up"
+      ? "上昇傾向"
+      : pressure.trend === "down"
+        ? "下降傾向"
+        : "ほぼ安定";
+  const levelLabel =
+    pressure.level === "pain"
+      ? "今後12時間に大きな気圧低下"
+      : pressure.level === "watch"
+        ? "今後12時間に気圧低下"
+        : pressure.level === "smile"
+          ? "今後12時間の気圧変動は小さめ"
+          : "気圧変動情報なし";
+  $("pressure-summary").setAttribute(
+    "aria-label",
+    `気圧 ${Number.isFinite(pressure.pressure) ? Math.round(pressure.pressure) : "不明"} ヘクトパスカル、${trendLabel}、${levelLabel}`,
+  );
   $("high").textContent =
     `↑ ${number(idx >= 0 ? data.daily.temperature_2m_max[idx] : null)}°`;
   $("low").textContent =

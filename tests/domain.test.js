@@ -7,6 +7,7 @@ import {
   moonPath,
   dayIndex,
   number,
+  pressureSignal,
 } from "../src/domain.js";
 test("Tokyo date rolls over independently from device UTC", () => {
   const p = parts(new Date("2026-10-05T15:00:00Z"), "Asia/Tokyo");
@@ -60,4 +61,34 @@ test("moving forecast keeps now at one-third across midnight", async () => {
     assert.equal(w.end - w.start, 18 * 3600);
     assert.equal(now.getTime() / 1000 - w.start, 6 * 3600);
   }
+});
+
+test("pressure outlook uses the worst six-hour drop inside the next 12 hours", () => {
+  const start = Date.parse("2026-10-06T00:00:00Z") / 1000;
+  const data = {
+    current: { pressure_msl: 1012.4 },
+    hourly: {
+      time: Array.from({ length: 13 }, (_, i) => start + i * 3600),
+      pressure_msl: [1012, 1011, 1010, 1009, 1008, 1007, 1006, 1006, 1007, 1008, 1009, 1010, 1011],
+    },
+  };
+  const result = pressureSignal(data, new Date(start * 1000));
+  assert.equal(result.level, "pain");
+  assert.equal(result.trend, "down");
+  assert.equal(result.maxDrop, -6);
+  assert.equal(Math.round(result.pressure), 1012);
+});
+
+test("pressure outlook smiles when forecast pressure stays nearly stable", () => {
+  const start = Date.parse("2026-10-06T00:00:00Z") / 1000;
+  const data = {
+    current: { pressure_msl: 1014 },
+    hourly: {
+      time: Array.from({ length: 13 }, (_, i) => start + i * 3600),
+      pressure_msl: [1014, 1014, 1013.8, 1014.2, 1014.1, 1014, 1014.3, 1014.2, 1014, 1014.1, 1014.2, 1014.4, 1014.3],
+    },
+  };
+  const result = pressureSignal(data, new Date(start * 1000));
+  assert.equal(result.level, "smile");
+  assert.equal(result.trend, "steady");
 });
