@@ -16,12 +16,14 @@ fs.mkdirSync("artifacts", { recursive: true });
     current: {
       temperature_2m: 19.4,
       relative_humidity_2m: 68,
+      pressure_msl: 1012.4,
       weather_code: 2,
       is_day: 0,
     },
     hourly: {
       time: [],
       temperature_2m: [],
+      pressure_msl: [],
       weather_code: [],
       precipitation_probability: [],
       is_day: [],
@@ -45,6 +47,9 @@ fs.mkdirSync("artifacts", { recursive: true });
     fixture.hourly.time.push(start + i * 3600);
     fixture.hourly.temperature_2m.push(
       19 + Math.sin((i / 24) * Math.PI * 2) * 4,
+    );
+    fixture.hourly.pressure_msl.push(
+      1012 + Math.sin((i / 24) * Math.PI * 2) * 0.6,
     );
     fixture.hourly.weather_code.push(
       i % 24 < 8 ? 3 : i % 24 < 15 ? 0 : i % 24 < 19 ? 61 : 2,
@@ -165,7 +170,9 @@ fs.mkdirSync("artifacts", { recursive: true });
   await page
     .getByRole("button", { name: "表示設定を戻す", exact: true })
     .click();
-  assert.equal((await page.locator("#now-marker").textContent()).trim(), "");
+  assert.equal(await page.locator("#now-label").isVisible(), false);
+  assert.equal(await page.locator("#pressure-value").textContent(), "1012");
+  assert.equal(await page.locator("#pressure-face svg").count(), 1);
   assert.equal(
     await page.locator(".github-link").getAttribute("href"),
     "https://github.com/taogya/smart-desk-clock",
