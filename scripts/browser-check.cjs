@@ -149,6 +149,10 @@ fs.mkdirSync("artifacts", { recursive: true });
           celestialTop: celestial.top,
           clockRight: rect("#seconds").right,
           mainRight: main.right,
+          pressureLeft: rect("#pressure-summary").left,
+          pressureRight: rect("#pressure-summary").right,
+          forecastLeft: rect(".forecast-panel").left,
+          forecastRight: rect(".forecast-panel").right,
         };
       });
       assert.ok(
@@ -161,6 +165,11 @@ fs.mkdirSync("artifacts", { recursive: true });
       );
       assert.ok(
         geometry.clockRight < geometry.mainRight,
+        JSON.stringify(geometry),
+      );
+      assert.ok(
+        geometry.pressureLeft >= geometry.forecastLeft - 1 &&
+          geometry.pressureRight <= geometry.forecastRight + 1,
         JSON.stringify(geometry),
       );
       await page.getByRole("button", { name: "表示設定", exact: true }).focus();
