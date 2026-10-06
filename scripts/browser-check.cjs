@@ -252,6 +252,42 @@ fs.mkdirSync("artifacts", { recursive: true });
     await page.clock.runFor(1000);
     await page.screenshot({ path: `artifacts/clock-${name}.png` });
   }
+  // A large time jump must catch up on the same quadratic sun arc, not
+  // interpolate cx/cy along a straight chord.
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.clock.setSystemTime(new Date("2026-10-06T00:00:00Z"));
+  await page.evaluate(() =>
+    document.dispatchEvent(new Event("visibilitychange")),
+  );
+  await page.clock.runFor(3000);
+  await page.clock.setSystemTime(new Date("2026-10-06T04:00:00Z"));
+  await page.evaluate(() =>
+    document.dispatchEvent(new Event("visibilitychange")),
+  );
+  await page.clock.runFor(700);
+  const sunMid = await page.locator("#sun-dot").evaluate((dot) => ({
+    cx: +dot.getAttribute("cx"),
+    cy: +dot.getAttribute("cy"),
+    catching: document
+      .getElementById("sun-path")
+      .classList.contains("sun-catching-up"),
+  }));
+  const sunMidP = (sunMid.cx - 24) / 512;
+  const expectedArcY = 98 - 332 * sunMidP * (1 - sunMidP);
+  assert.equal(sunMid.catching, true);
+  assert.ok(
+    Math.abs(sunMid.cy - expectedArcY) < 0.6,
+    `sun stays on arc while catching up: ${JSON.stringify({ sunMid, expectedArcY })}`,
+  );
+  await page.clock.runFor(3000);
+  assert.equal(
+    await page.locator("#sun-path").evaluate((e) =>
+      e.classList.contains("sun-catching-up"),
+    ),
+    false,
+  );
+  await page.emulateMedia({ reducedMotion: "reduce" });
+
   await page.unroute("https://api.open-meteo.com/**");
   await page.route("https://api.open-meteo.com/**", (r) => r.abort());
   await page.reload();

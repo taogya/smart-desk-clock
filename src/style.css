@@ -1118,6 +1118,12 @@ footer {
 .orbit-progress {
   transition: stroke-dasharray 60s linear;
 }
+#sun-path.sun-catching-up #sun-dot {
+  transition: opacity 3s;
+}
+#sun-path.sun-catching-up .orbit-progress {
+  transition: none;
+}
 .moon-section #moon-light {
   transition: fill 3s;
 }

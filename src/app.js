@@ -30,6 +30,100 @@ let activeRequest = null,
   lastDay = "",
   lastMinute = "",
   failed = false;
+let sunAnimationFrame = 0,
+  sunDisplayedP = 0,
+  sunTargetP = null,
+  sunLastEpoch = null,
+  sunDayKey = null;
+
+function sunPoint(p) {
+  return { x: 24 + 512 * p, y: 98 - 332 * p * (1 - p) };
+}
+function applySunPosition(p, daytime) {
+  const point = sunPoint(p);
+  $("sun-dot").setAttribute("cx", point.x);
+  $("sun-dot").setAttribute("cy", point.y);
+  $("sun-dot").style.opacity = daytime ? 1 : 0;
+  $("sun-progress").style.strokeDasharray = `${daytime ? p : 0} 1`;
+}
+function stopSunCatchUp() {
+  if (sunAnimationFrame) cancelAnimationFrame(sunAnimationFrame);
+  sunAnimationFrame = 0;
+  $("sun-path").classList.remove("sun-catching-up");
+}
+function animateSunAlongArc(targetP, daytime) {
+  stopSunCatchUp();
+  const startP = sunDisplayedP,
+    distance = Math.abs(targetP - startP);
+  if (
+    distance < 0.002 ||
+    matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    applySunPosition(targetP, daytime);
+    sunDisplayedP = targetP;
+    return;
+  }
+
+  $("sun-path").classList.add("sun-catching-up");
+  const duration = Math.min(2600, Math.max(1000, 900 + distance * 2400));
+  let startedAt;
+  const step = (timestamp) => {
+    startedAt ??= timestamp;
+    const linear = Math.min(1, (timestamp - startedAt) / duration),
+      eased = 1 - (1 - linear) ** 3,
+      p = startP + (targetP - startP) * eased;
+    applySunPosition(p, daytime);
+    sunDisplayedP = p;
+    if (linear < 1) {
+      sunAnimationFrame = requestAnimationFrame(step);
+      return;
+    }
+    sunAnimationFrame = 0;
+    sunDisplayedP = targetP;
+    $("sun-path").classList.remove("sun-catching-up");
+  };
+  sunAnimationFrame = requestAnimationFrame(step);
+}
+function updateSunPosition(targetP, daytime, now, dayKey) {
+  const epoch = now.getTime() / 1000,
+    firstValidPosition = sunTargetP == null,
+    dayChanged = sunDayKey != null && sunDayKey !== dayKey,
+    longGap = sunLastEpoch != null && epoch - sunLastEpoch > 90,
+    largeMove =
+      sunTargetP == null || Math.abs(targetP - sunTargetP) > 0.01,
+    shouldCatchUp =
+      daytime && (firstValidPosition || dayChanged || (longGap && largeMove));
+
+  if (dayChanged) {
+    stopSunCatchUp();
+    sunDisplayedP = 0;
+    applySunPosition(0, daytime);
+  }
+
+  if (shouldCatchUp) {
+    if (
+      !sunAnimationFrame ||
+      sunTargetP == null ||
+      Math.abs(targetP - sunTargetP) > 0.002
+    )
+      animateSunAlongArc(targetP, daytime);
+  } else if (!sunAnimationFrame) {
+    applySunPosition(targetP, daytime);
+    sunDisplayedP = targetP;
+  }
+
+  sunTargetP = targetP;
+  sunLastEpoch = epoch;
+  sunDayKey = dayKey;
+}
+function resetSunMotion() {
+  stopSunCatchUp();
+  sunDisplayedP = 0;
+  sunTargetP = null;
+  sunLastEpoch = null;
+  sunDayKey = null;
+  applySunPosition(0, false);
+}
 function fit() {
   if (innerWidth <= 700 && innerHeight > innerWidth) {
     $("clock").style.transform = "";
@@ -133,14 +227,17 @@ function renderWeather(now) {
     `↓ ${number(idx >= 0 ? data.daily.temperature_2m_min[idx] : null)}°`;
   $("sunrise").textContent = formatTime(rise);
   $("sunset").textContent = formatTime(set);
-  let p =
+  const p =
     rise && set
       ? Math.max(0, Math.min(1, (now.getTime() / 1000 - rise) / (set - rise)))
       : 0;
-  $("sun-dot").setAttribute("cx", 24 + 512 * p);
-  $("sun-dot").setAttribute("cy", 98 - 332 * p * (1 - p));
-  $("sun-dot").style.opacity = daytime ? 1 : 0;
-  $("sun-progress").style.strokeDasharray = `${daytime ? p : 0} 1`;
+  if (rise && set) updateSunPosition(p, daytime, now, parts(now, location.timezone).key);
+  else {
+    stopSunCatchUp();
+    applySunPosition(0, false);
+    sunDisplayedP = 0;
+    sunTargetP = null;
+  }
   $("day-phase").textContent =
     rise && set ? (daytime ? "昼の時間" : "夜の時間") : "太陽情報なし";
   const moon = moonPhase(now);
@@ -233,6 +330,7 @@ $("search-form").onsubmit = async (event) => {
         failed = false;
         lastDay = "";
         lastMinute = "";
+        resetSunMotion();
         $("settings").close();
         tick();
         loadWeather();
