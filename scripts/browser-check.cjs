@@ -104,6 +104,28 @@ fs.mkdirSync("artifacts", { recursive: true });
       box.x >= -1 && box.y >= -1 && box.x + box.width <= width + 1,
       "clock stays inside viewport",
     );
+    const pressureBounds = await page.evaluate(() => {
+      const p = document.querySelector(".forecast-panel").getBoundingClientRect();
+      const s = document.querySelector("#pressure-summary").getBoundingClientRect();
+      const children = [...document.querySelector("#pressure-summary").children].map(
+        (e) => e.getBoundingClientRect(),
+      );
+      return {
+        panelLeft: p.left,
+        panelRight: p.right,
+        summaryLeft: s.left,
+        summaryRight: s.right,
+        childLeft: Math.min(...children.map((r) => r.left)),
+        childRight: Math.max(...children.map((r) => r.right)),
+      };
+    });
+    assert.ok(
+      pressureBounds.summaryLeft >= pressureBounds.panelLeft - 1 &&
+        pressureBounds.summaryRight <= pressureBounds.panelRight + 1 &&
+        pressureBounds.childLeft >= pressureBounds.panelLeft - 1 &&
+        pressureBounds.childRight <= pressureBounds.panelRight + 1,
+      `pressure stays inside forecast panel: ${JSON.stringify(pressureBounds)}`,
+    );
     await page.screenshot({ path: `artifacts/clock-${name}.png` });
   }
   await page.setViewportSize({ width: 1024, height: 600 });
