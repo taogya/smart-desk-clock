@@ -413,11 +413,11 @@ footer a {
   flex-direction: column;
 }
 .pressure-summary {
-  min-height: 42px;
+  min-height: 58px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
+  gap: 10px;
   font-variant-numeric: tabular-nums;
 }
 .pressure-reading {
@@ -426,17 +426,17 @@ footer a {
   white-space: nowrap;
 }
 .pressure-reading b {
-  font-size: 21px;
+  font-size: 28px;
   font-weight: 400;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 .pressure-reading small {
-  margin-left: 3px;
-  font-size: 10px;
+  margin-left: 4px;
+  font-size: 12px;
   color: var(--muted);
 }
 .pressure-trend {
-  font-size: 24px;
+  font-size: 28px;
   line-height: 1;
   color: var(--muted);
 }
@@ -447,9 +447,10 @@ footer a {
   color: #8dc5ca;
 }
 .pressure-face {
-  width: 38px;
-  height: 38px;
+  width: 55px;
+  height: 55px;
   display: inline-flex;
+  flex: 0 0 auto;
   color: #dce5e1;
 }
 .pressure-face svg {
@@ -465,7 +466,7 @@ footer a {
 .timeline {
   position: relative;
   flex: 1;
-  margin-top: 16px;
+  margin-top: 10px;
   margin-bottom: 24px;
   margin-right: 0;
 }
@@ -1515,17 +1516,17 @@ footer {
   margin-top: calc(20px - (var(--text-scale) - 1) * 50px);
 }
 .pressure-reading b {
-  font-size: calc(21px * var(--text-scale));
+  font-size: calc(28px * var(--text-scale));
 }
 .pressure-reading small {
-  font-size: calc(10px * var(--text-scale));
+  font-size: calc(12px * var(--text-scale));
 }
 .pressure-trend {
-  font-size: calc(24px * var(--text-scale));
+  font-size: calc(28px * var(--text-scale));
 }
 .pressure-face {
-  width: calc(38px * var(--text-scale));
-  height: calc(38px * var(--text-scale));
+  width: calc(55px * var(--text-scale));
+  height: calc(55px * var(--text-scale));
 }
 .hour-row .hour {
   font-size: calc(25px * var(--text-scale));
@@ -1648,21 +1649,21 @@ footer {
     font-size: calc(10px * var(--text-scale));
   }
   .pressure-summary {
-    min-height: 28px;
+    min-height: 40px;
     gap: 4px;
   }
   .pressure-reading b {
-    font-size: calc(12px * var(--text-scale));
+    font-size: calc(16px * var(--text-scale));
   }
   .pressure-reading small {
-    font-size: calc(7px * var(--text-scale));
+    font-size: calc(8px * var(--text-scale));
   }
   .pressure-trend {
-    font-size: calc(15px * var(--text-scale));
+    font-size: calc(17px * var(--text-scale));
   }
   .pressure-face {
-    width: calc(24px * var(--text-scale));
-    height: calc(24px * var(--text-scale));
+    width: calc(34px * var(--text-scale));
+    height: calc(34px * var(--text-scale));
   }
   .hour-row .hour {
     font-size: calc(12px * var(--text-scale));
