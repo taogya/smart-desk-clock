@@ -243,14 +243,13 @@ fs.mkdirSync("artifacts", { recursive: true });
       host.dataset.trend = state;
       colors[state] = getComputedStyle(trend).color;
     }
-    const result = {
+    host.dataset.level = "smile";
+    host.dataset.trend = "steady";
+    return {
       colors,
       fill: getComputedStyle(disc).fill,
       faceInk: getComputedStyle(features).stroke,
     };
-    host.dataset.level = "smile";
-    host.dataset.trend = "steady";
-    return result;
   });
   assert.deepEqual(faceCheck.colors, {
     smile: "rgb(131, 174, 152)",
