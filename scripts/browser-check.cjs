@@ -252,12 +252,12 @@ fs.mkdirSync("artifacts", { recursive: true });
     };
   });
   assert.deepEqual(faceCheck.colors, {
-    smile: "rgb(131, 174, 152)",
+    smile: "rgb(111, 179, 122)",
     watch: "rgb(195, 175, 112)",
     pain: "rgb(187, 128, 122)",
     unknown: "rgb(131, 152, 155)",
     up: "rgb(130, 173, 192)",
-    steady: "rgb(141, 176, 154)",
+    steady: "rgb(110, 169, 120)",
     down: "rgb(194, 139, 132)",
   });
   assert.equal(faceCheck.fill, faceCheck.colors.smile);

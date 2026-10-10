@@ -460,7 +460,7 @@ footer a {
 .pressure-trend {
   font-size: 28px;
   line-height: 1;
-  color: #8db09a;
+  color: #6ea978;
 }
 .pressure-summary[data-trend="down"] .pressure-trend {
   color: #c28b84;
@@ -492,7 +492,7 @@ footer a {
   stroke: none;
 }
 .pressure-summary[data-level="smile"] .pressure-face {
-  color: #83ae98;
+  color: #6fb37a;
 }
 .pressure-summary[data-level="watch"] .pressure-face {
   color: #c3af70;
