@@ -7,9 +7,9 @@ import {
   dayIndex,
   number,
   pressureSignal,
-} from "./domain.js";
+} from "./domain.js?v=20261011-2";
 import { icon, pressureFace } from "./icons.js";
-import { updateTimeline } from "./timeline.js";
+import { updateTimeline } from "./timeline.js?v=20261011-2";
 import { read, save, cacheKey, forecast, searchCities } from "./api.js";
 const $ = (id) => document.getElementById(id);
 let location = read("utsuroi-location") ?? DEFAULT_LOCATION;

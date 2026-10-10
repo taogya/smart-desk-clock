@@ -122,6 +122,11 @@ fs.mkdirSync("artifacts", { recursive: true });
         humidityRight: document.querySelector(".humidity").getBoundingClientRect().right,
         headlineBottom: document.querySelector(".pressure-headline").getBoundingClientRect().bottom,
         faceTop: document.querySelector(".pressure-face").getBoundingClientRect().top,
+        faceWidth: document.querySelector(".pressure-face").getBoundingClientRect().width,
+        conditionsRight: document.querySelector(".conditions").getBoundingClientRect().right,
+        mainRight: p.right,
+        forecastTop: document.querySelector(".forecast-panel").getBoundingClientRect().top,
+        timelineTop: document.querySelector(".timeline").getBoundingClientRect().top,
       };
     });
     assert.ok(
@@ -135,6 +140,15 @@ fs.mkdirSync("artifacts", { recursive: true });
       pressureBounds.summaryLeft >= pressureBounds.humidityRight - 1 &&
         pressureBounds.faceTop >= pressureBounds.headlineBottom - 1,
       `pressure stays to the right of humidity and face below reading: ${JSON.stringify(pressureBounds)}`,
+    );
+    assert.ok(
+      pressureBounds.summaryRight <= pressureBounds.mainRight + 1 &&
+        pressureBounds.faceWidth >= (width > 700 ? 40 : 50),
+      `pressure readable and inside main panel: ${JSON.stringify(pressureBounds)}`,
+    );
+    assert.ok(
+      pressureBounds.timelineTop - pressureBounds.forecastTop <= (height / 720) * 28 + 8,
+      `forecast timeline starts near the panel top: ${JSON.stringify(pressureBounds)}`,
     );
     await page.screenshot({ path: `artifacts/clock-${name}.png` });
   }

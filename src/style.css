@@ -280,12 +280,14 @@ button {
 .metrics {
   display: flex;
   align-items: center;
+  flex: 0 0 auto;
   min-width: 0;
-  gap: 20px;
-  margin-left: 16px;
+  gap: 12px;
+  margin-left: 0;
 }
 .metrics .humidity {
   margin-left: 0;
+  flex: 0 0 auto;
 }
 .humidity {
   margin-left: 28px;
@@ -425,6 +427,7 @@ footer a {
 .pressure-summary {
   display: flex;
   flex-direction: column;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
   gap: 3px;
@@ -946,8 +949,8 @@ header:focus-within {
 }
 .humidity {
   font-size: 48px;
-  padding-left: 23px;
-  margin-left: 16px;
+  padding-left: 16px;
+  margin-left: 0;
 }
 .humidity small {
   font-size: 23px;
@@ -1000,7 +1003,7 @@ footer {
   font-size: 10px;
 }
 .forecast-panel {
-  padding: 14px 23px 22px;
+  padding: 4px 23px 22px;
   background: #081e298c;
 }
 .forecast-heading {
@@ -1013,15 +1016,15 @@ footer {
   letter-spacing: 0.015em;
 }
 .timeline {
-  margin-top: 4px;
+  margin-top: 0;
   margin-bottom: 18px;
   overflow: hidden;
   isolation: isolate;
   mask-image: linear-gradient(
     to bottom,
     transparent,
-    #000 4%,
-    #000 96%,
+    #000 1%,
+    #000 99%,
     transparent
   );
 }
@@ -1354,7 +1357,7 @@ dialog {
     font-size: 8px;
   }
   .forecast-panel {
-    padding: 14px 9px 20px;
+    padding: 4px 9px 20px;
   }
   .forecast-heading {
     font-size: 13px;
