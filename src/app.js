@@ -8,7 +8,7 @@ import {
   number,
   pressureSignal,
 } from "./domain.js?v=20261011-2";
-import { icon, pressureFace } from "./icons.js";
+import { icon, pressureFace } from "./icons.js?v=20261011-3";
 import { updateTimeline } from "./timeline.js?v=20261011-2";
 import { read, save, cacheKey, forecast, searchCities } from "./api.js";
 const $ = (id) => document.getElementById(id);

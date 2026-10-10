@@ -93,3 +93,14 @@ test("pressure outlook smiles when forecast pressure stays nearly stable", () =>
   assert.equal(result.level, "smile");
   assert.equal(result.trend, "steady");
 });
+
+test("pressure faces use filled discs and distinct expressions for each outlook", async () => {
+  const { pressureFace } = await import("../src/icons.js");
+  const faces = ["smile", "watch", "pain", "unknown"].map(pressureFace);
+  for (const svg of faces) {
+    assert.match(svg, /class="face-disc"/);
+    assert.match(svg, /class="face-features"/);
+    assert.match(svg, /class="filled-feature"|<path d=/);
+  }
+  assert.equal(new Set(faces).size, 4);
+});

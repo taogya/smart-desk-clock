@@ -227,6 +227,42 @@ fs.mkdirSync("artifacts", { recursive: true });
   assert.equal(await page.locator("#now-label").isVisible(), false);
   assert.equal(await page.locator("#pressure-value").textContent(), "1012");
   assert.equal(await page.locator("#pressure-face svg").count(), 1);
+  // Check solid-face styling and every semantic color, independent of the weather fixture.
+  const faceCheck = await page.evaluate(() => {
+    const host = document.querySelector("#pressure-summary");
+    const disc = document.querySelector(".pressure-face .face-disc");
+    const features = document.querySelector(".pressure-face .face-features");
+    const face = document.querySelector(".pressure-face");
+    const trend = document.querySelector(".pressure-trend");
+    const colors = {};
+    for (const level of ["smile", "watch", "pain", "unknown"]) {
+      host.dataset.level = level;
+      colors[level] = getComputedStyle(face).color;
+    }
+    for (const state of ["up", "steady", "down"]) {
+      host.dataset.trend = state;
+      colors[state] = getComputedStyle(trend).color;
+    }
+    const result = {
+      colors,
+      fill: getComputedStyle(disc).fill,
+      faceInk: getComputedStyle(features).stroke,
+    };
+    host.dataset.level = "smile";
+    host.dataset.trend = "steady";
+    return result;
+  });
+  assert.deepEqual(faceCheck.colors, {
+    smile: "rgb(131, 174, 152)",
+    watch: "rgb(195, 175, 112)",
+    pain: "rgb(187, 128, 122)",
+    unknown: "rgb(131, 152, 155)",
+    up: "rgb(130, 173, 192)",
+    steady: "rgb(141, 176, 154)",
+    down: "rgb(194, 139, 132)",
+  });
+  assert.equal(faceCheck.fill, faceCheck.colors.smile);
+  assert.equal(faceCheck.faceInk, "rgb(24, 49, 58)");
   assert.equal(
     await page.locator(".github-link").getAttribute("href"),
     "https://github.com/taogya/smart-desk-clock",
