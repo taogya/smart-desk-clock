@@ -48,7 +48,7 @@ test("moon age wraps at known reference; drawing is finite in all phases", () =>
   assert.ok(moonPhase(new Date("1999-01-01")).age >= 0);
 });
 
-test("moving forecast keeps now at one-third across midnight", async () => {
+test("24-hour forecast keeps now at one-eighth across midnight", async () => {
   const { timelineWindow } = await import("../src/domain.js");
   for (const date of [
     "2026-10-05T14:59:59Z",
@@ -57,9 +57,10 @@ test("moving forecast keeps now at one-third across midnight", async () => {
   ]) {
     const now = new Date(date),
       w = timelineWindow(now);
-    assert.equal(w.nowPosition, 1 / 3);
-    assert.equal(w.end - w.start, 18 * 3600);
-    assert.equal(now.getTime() / 1000 - w.start, 6 * 3600);
+    assert.equal(w.nowPosition, 1 / 8);
+    assert.equal(w.end - w.start, 24 * 3600);
+    assert.equal(now.getTime() / 1000 - w.start, 3 * 3600);
+    assert.equal(w.end - now.getTime() / 1000, 21 * 3600);
   }
 });
 

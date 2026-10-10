@@ -91,17 +91,35 @@
               <span id="high">↑ --°</span><span id="low">↓ --°</span>
             </div>
           </div>
-          <div class="humidity">
-            <span class="drop"
-              ><svg viewBox="0 0 24 26" aria-hidden="true">
-                <path
-                  d="M12 2C9 7 4 12 4 17a8 8 0 0 0 16 0C20 12 15 7 12 2Z"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.7"
-                /></svg></span
-            ><span id="humidity">--</span><small>%</small
-            ><span class="metric-label">湿度</span>
+          <div class="metrics">
+            <div class="humidity">
+              <span class="drop"
+                ><svg viewBox="0 0 24 26" aria-hidden="true">
+                  <path
+                    d="M12 2C9 7 4 12 4 17a8 8 0 0 0 16 0C20 12 15 7 12 2Z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                  /></svg></span
+              ><span id="humidity">--</span><small>%</small
+              ><span class="metric-label">湿度</span>
+            </div>
+            <div
+              class="pressure-summary"
+              id="pressure-summary"
+              role="img"
+              aria-label="気圧情報を取得中"
+              data-trend="steady"
+              data-level="unknown"
+            >
+              <div class="pressure-headline">
+                <span class="pressure-reading"
+                  ><b id="pressure-value">--</b><small>hPa</small></span
+                ><span class="pressure-trend" id="pressure-trend" aria-hidden="true"
+                  >→</span>
+              </div>
+              <span class="pressure-face" id="pressure-face" aria-hidden="true"></span>
+            </div>
           </div>
         </div>
         <div class="celestial">
@@ -150,21 +168,7 @@
           >
         </footer>
       </section>
-      <aside class="forecast-panel" aria-label="過去6時間と未来12時間の天気">
-        <div
-          class="pressure-summary"
-          id="pressure-summary"
-          role="img"
-          aria-label="気圧情報を取得中"
-          data-trend="steady"
-          data-level="unknown"
-        >
-          <span class="pressure-reading"
-            ><b id="pressure-value">--</b><small>hPa</small></span
-          ><span class="pressure-trend" id="pressure-trend" aria-hidden="true"
-            >→</span
-          ><span class="pressure-face" id="pressure-face" aria-hidden="true"></span>
-        </div>
+      <aside class="forecast-panel" aria-label="過去3時間と未来21時間の天気">
         <div class="timeline" id="timeline">
           <div class="timeline-layers" id="timeline-layers"></div>
           <div class="past-shade" aria-hidden="true"></div>

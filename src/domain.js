@@ -167,8 +167,8 @@ export function pressureSignal(data, now) {
   };
 }
 
-export const TIMELINE_HOURS = 18;
-export const PAST_HOURS = 6;
+export const TIMELINE_HOURS = 24;
+export const PAST_HOURS = 3;
 export function timelineWindow(now) {
   const center = now.getTime() / 1000;
   return {

@@ -87,6 +87,8 @@ fs.mkdirSync("artifacts", { recursive: true });
     [1024, 600, "7inch"],
     [800, 480, "small"],
     [390, 844, "mobile"],
+    [375, 812, "mobile-375"],
+    [320, 700, "mobile-320"],
   ]) {
     await page.setViewportSize({ width, height });
     // Viewport changes resolve before the browser dispatches resize on some runners.
@@ -105,7 +107,7 @@ fs.mkdirSync("artifacts", { recursive: true });
       "clock stays inside viewport",
     );
     const pressureBounds = await page.evaluate(() => {
-      const p = document.querySelector(".forecast-panel").getBoundingClientRect();
+      const p = document.querySelector(".main-panel").getBoundingClientRect();
       const s = document.querySelector("#pressure-summary").getBoundingClientRect();
       const children = [...document.querySelector("#pressure-summary").children].map(
         (e) => e.getBoundingClientRect(),
@@ -117,6 +119,9 @@ fs.mkdirSync("artifacts", { recursive: true });
         summaryRight: s.right,
         childLeft: Math.min(...children.map((r) => r.left)),
         childRight: Math.max(...children.map((r) => r.right)),
+        humidityRight: document.querySelector(".humidity").getBoundingClientRect().right,
+        headlineBottom: document.querySelector(".pressure-headline").getBoundingClientRect().bottom,
+        faceTop: document.querySelector(".pressure-face").getBoundingClientRect().top,
       };
     });
     assert.ok(
@@ -124,7 +129,12 @@ fs.mkdirSync("artifacts", { recursive: true });
         pressureBounds.summaryRight <= pressureBounds.panelRight + 1 &&
         pressureBounds.childLeft >= pressureBounds.panelLeft - 1 &&
         pressureBounds.childRight <= pressureBounds.panelRight + 1,
-      `pressure stays inside forecast panel: ${JSON.stringify(pressureBounds)}`,
+      `pressure stays inside main panel: ${JSON.stringify(pressureBounds)}`,
+    );
+    assert.ok(
+      pressureBounds.summaryLeft >= pressureBounds.humidityRight - 1 &&
+        pressureBounds.faceTop >= pressureBounds.headlineBottom - 1,
+      `pressure stays to the right of humidity and face below reading: ${JSON.stringify(pressureBounds)}`,
     );
     await page.screenshot({ path: `artifacts/clock-${name}.png` });
   }
@@ -170,11 +180,10 @@ fs.mkdirSync("artifacts", { recursive: true });
           conditionsBottom: conditions.bottom,
           celestialTop: celestial.top,
           clockRight: rect("#seconds").right,
+          mainLeft: main.left,
           mainRight: main.right,
           pressureLeft: rect("#pressure-summary").left,
           pressureRight: rect("#pressure-summary").right,
-          forecastLeft: rect(".forecast-panel").left,
-          forecastRight: rect(".forecast-panel").right,
         };
       });
       assert.ok(
@@ -190,8 +199,8 @@ fs.mkdirSync("artifacts", { recursive: true });
         JSON.stringify(geometry),
       );
       assert.ok(
-        geometry.pressureLeft >= geometry.forecastLeft - 1 &&
-          geometry.pressureRight <= geometry.forecastRight + 1,
+        geometry.pressureLeft >= geometry.mainLeft - 1 &&
+          geometry.pressureRight <= geometry.mainRight + 1,
         JSON.stringify(geometry),
       );
       await page.getByRole("button", { name: "表示設定", exact: true }).focus();
@@ -221,7 +230,7 @@ fs.mkdirSync("artifacts", { recursive: true });
     page
       .locator("#now-marker")
       .evaluate((e) => e.offsetTop / e.parentElement.clientHeight);
-  assert.ok(Math.abs((await marker()) - 1 / 3) < 0.005);
+  assert.ok(Math.abs((await marker()) - 1 / 8) < 0.005);
   const position = async () =>
     page
       .locator('.hour-row[data-epoch="1791212400"]')
@@ -242,7 +251,7 @@ fs.mkdirSync("artifacts", { recursive: true });
     Math.abs(after - before) < 1,
     `midnight does not reset timeline: before=${before}, after=${after}`,
   );
-  assert.ok(Math.abs((await marker()) - 1 / 3) < 0.005);
+  assert.ok(Math.abs((await marker()) - 1 / 8) < 0.005);
   await page.screenshot({ path: "artifacts/clock-midnight.png" });
   for (const [time, name] of [
     ["2026-10-06T03:23:36Z", "day"],
