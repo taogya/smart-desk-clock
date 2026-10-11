@@ -282,10 +282,11 @@ button {
   align-items: center;
   flex: 0 0 auto;
   min-width: 0;
-  /* Equal 50px gaps from weather to humidity and humidity to pressure.
-     Place the face above the moon icon in the default landscape layout. */
-  gap: 50px;
-  margin-left: 32px;
+  /* Match both gaps; grow to align the pressure face with the moon icon.
+     Reduce the gaps at larger text sizes to preserve the available width. */
+  --metric-gap: clamp(34px, calc(70px - (var(--text-scale) - 1) * 150px), 88px);
+  gap: var(--metric-gap);
+  margin-left: calc(var(--metric-gap) - 18px);
 }
 .metrics .humidity {
   margin-left: 0;
@@ -298,7 +299,7 @@ button {
 .metrics .pressure-summary::before {
   content: "";
   position: absolute;
-  left: -25px;
+  left: -35px;
   top: 50%;
   transform: translateY(-50%);
   width: 1px;
