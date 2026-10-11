@@ -123,6 +123,17 @@ fs.mkdirSync("artifacts", { recursive: true });
       `date shares time vertical band: ${JSON.stringify(dateRow)}`);
     assert.ok(dateRow.timeLeft < dateRow.panelRight,
       `time must remain inside main panel: ${JSON.stringify(dateRow)}`);
+    const clockFit = await page.evaluate(() => {
+      const line = document.querySelector(".time-line").getBoundingClientRect();
+      const seconds = document.querySelector("#seconds").getBoundingClientRect();
+      const panel = document.querySelector(".main-panel");
+      const style = getComputedStyle(panel);
+      return { end: seconds.right, lineEnd: line.right,
+        limit: panel.getBoundingClientRect().right - parseFloat(style.paddingRight),
+        zoom: parseFloat(document.querySelector(".time-line").style.zoom) };
+    });
+    assert.ok(clockFit.end <= clockFit.limit + 1 && clockFit.lineEnd <= clockFit.limit + 1,
+      `clock including seconds fits content: ${JSON.stringify(clockFit)}`);
     const box = await page.locator("#clock").boundingBox();
     assert.ok(
       box.x >= -1 && box.y >= -1 && box.x + box.width <= width + 1,
