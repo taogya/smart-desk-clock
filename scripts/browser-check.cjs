@@ -420,10 +420,13 @@ fs.mkdirSync("artifacts", { recursive: true });
   const halo = await page.locator("#sun-glow").evaluate(el => ({
     cx: +el.getAttribute("cx"),
     cy: +el.getAttribute("cy"),
+    sunCx: +document.getElementById("sun-dot").getAttribute("cx"),
+    sunCy: +document.getElementById("sun-dot").getAttribute("cy"),
     animation: getComputedStyle(el).animationName,
   }));
-  assert.equal(halo.cx, sunMid.cx);
-  assert.equal(halo.cy, sunMid.cy);
+  // Both coordinates must be sampled in one browser frame while the sun moves.
+  assert.equal(halo.cx, halo.sunCx);
+  assert.equal(halo.cy, halo.sunCy);
   assert.equal(halo.animation, "sun-glow-breathe");
   assert.ok(
     Math.abs(sunMid.cy - expectedArcY) < 0.6,
