@@ -162,6 +162,7 @@ function fit() {
   fitTime();
 }
 addEventListener("resize", fit);
+new ResizeObserver(fitTime).observe(document.querySelector(".main-panel"));
 fit();
 function formatTime(epoch) {
   return epoch
