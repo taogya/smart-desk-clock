@@ -1948,3 +1948,12 @@ footer {
   .date-year, .date-weekday { font-size: calc(23px * var(--text-scale)); }
   .time-block .time-line { gap: calc(8px * var(--text-scale)); }
 }
+
+/* The size selector is a requested maximum, not permission to cover forecasts. */
+.time-block { max-width: 100%; }
+.time-block .time-line {
+  width: max-content;
+  flex-wrap: nowrap;
+  zoom: 1;
+}
+.time-block .time-line > * { flex-shrink: 0; }
