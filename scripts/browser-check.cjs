@@ -120,6 +120,12 @@ fs.mkdirSync("artifacts", { recursive: true });
         childLeft: Math.min(...children.map((r) => r.left)),
         childRight: Math.max(...children.map((r) => r.right)),
         humidityRight: document.querySelector(".humidity").getBoundingClientRect().right,
+        humidityLeft: document.querySelector(".humidity").getBoundingClientRect().left,
+        weatherRight: document.querySelector(".condition-detail").getBoundingClientRect().right,
+        moonCenter: (() => {
+          const r = document.querySelector(".moon-section svg").getBoundingClientRect();
+          return (r.left + r.right) / 2;
+        })(),
         headlineBottom: document.querySelector(".pressure-headline").getBoundingClientRect().bottom,
         faceTop: document.querySelector(".pressure-face").getBoundingClientRect().top,
         faceWidth: document.querySelector(".pressure-face").getBoundingClientRect().width,
@@ -164,6 +170,18 @@ fs.mkdirSync("artifacts", { recursive: true });
       `pressure readable and inside main panel: ${JSON.stringify(pressureBounds)}`,
     );
     if (width > 700) {
+      const weatherToHumidity = pressureBounds.humidityLeft - pressureBounds.weatherRight;
+      const humidityToPressure = pressureBounds.summaryLeft - pressureBounds.humidityRight;
+      assert.ok(
+        Math.abs(weatherToHumidity - humidityToPressure) < 1.5,
+        `weather/humidity and humidity/pressure gaps match: ${JSON.stringify({ weatherToHumidity, humidityToPressure, pressureBounds })}`,
+      );
+      if (width === 1280 && height === 720) {
+        assert.ok(
+          Math.abs(pressureBounds.faceCenter - pressureBounds.moonCenter) < 28,
+          `pressure face aligns around the moon icon: ${JSON.stringify(pressureBounds)}`,
+        );
+      }
       assert.ok(
         pressureBounds.divider.display !== "none" &&
           pressureBounds.divider.width === 1 &&
