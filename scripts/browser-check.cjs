@@ -123,6 +123,10 @@ fs.mkdirSync("artifacts", { recursive: true });
         headlineBottom: document.querySelector(".pressure-headline").getBoundingClientRect().bottom,
         faceTop: document.querySelector(".pressure-face").getBoundingClientRect().top,
         faceWidth: document.querySelector(".pressure-face").getBoundingClientRect().width,
+        readingLeft: document.querySelector(".pressure-reading").getBoundingClientRect().left,
+        readingCenter: (document.querySelector(".pressure-reading").getBoundingClientRect().left + document.querySelector(".pressure-reading").getBoundingClientRect().right) / 2,
+        faceCenter: (document.querySelector(".pressure-face").getBoundingClientRect().left + document.querySelector(".pressure-face").getBoundingClientRect().right) / 2,
+        trendRight: document.querySelector(".pressure-trend").getBoundingClientRect().right,
         conditionsRight: document.querySelector(".conditions").getBoundingClientRect().right,
         mainRight: p.right,
         forecastTop: document.querySelector(".forecast-panel").getBoundingClientRect().top,
@@ -146,6 +150,16 @@ fs.mkdirSync("artifacts", { recursive: true });
         pressureBounds.faceWidth >= (width > 700 ? 40 : 50),
       `pressure readable and inside main panel: ${JSON.stringify(pressureBounds)}`,
     );
+    if (width > 700) {
+      assert.ok(
+        pressureBounds.readingLeft >= pressureBounds.humidityRight + 18,
+        `landscape humidity and pressure have breathing room: ${JSON.stringify(pressureBounds)}`,
+      );
+      assert.ok(
+        Math.abs(pressureBounds.readingCenter - pressureBounds.faceCenter) <= 1,
+        `landscape pressure reading centered over face: ${JSON.stringify(pressureBounds)}`,
+      );
+    }
     assert.ok(
       pressureBounds.timelineTop - pressureBounds.forecastTop <= (height / 720) * 28 + 8,
       `forecast timeline starts near the panel top: ${JSON.stringify(pressureBounds)}`,

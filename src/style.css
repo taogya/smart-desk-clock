@@ -282,7 +282,7 @@ button {
   align-items: center;
   flex: 0 0 auto;
   min-width: 0;
-  gap: 12px;
+  gap: 28px;
   margin-left: 0;
 }
 .metrics .humidity {
@@ -436,10 +436,10 @@ footer a {
   font-variant-numeric: tabular-nums;
 }
 .pressure-headline {
-  display: flex;
+  position: relative;
+  display: inline-flex;
   align-items: baseline;
   justify-content: center;
-  gap: 7px;
   white-space: nowrap;
 }
 .pressure-reading {
@@ -458,6 +458,10 @@ footer a {
   color: var(--muted);
 }
 .pressure-trend {
+  position: absolute;
+  left: calc(100% + 7px);
+  top: 50%;
+  transform: translateY(-50%);
   font-size: 28px;
   line-height: 1;
   color: #6ea978;
@@ -1717,7 +1721,13 @@ footer {
     min-width: 0;
   }
   .pressure-headline {
+    position: static;
+    display: flex;
     gap: 4px;
+  }
+  .metrics .pressure-trend {
+    position: static;
+    transform: none;
   }
   .pressure-reading b {
     font-size: calc(19px * var(--text-scale));
