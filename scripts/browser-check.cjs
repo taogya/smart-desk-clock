@@ -109,6 +109,7 @@ fs.mkdirSync("artifacts", { recursive: true });
         box.bottom <= innerHeight + 1
       );
     });
+    await page.evaluate(() => window.dispatchEvent(new Event("resize")));
     const dateRow = await page.evaluate(() => {
       const date = document.getElementById("date").getBoundingClientRect();
       const time = document.getElementById("time").getBoundingClientRect();
