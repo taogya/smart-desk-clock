@@ -289,6 +289,21 @@ button {
   margin-left: 0;
   flex: 0 0 auto;
 }
+/* Match the separator before humidity without shifting the pressure reading. */
+.metrics .pressure-summary {
+  position: relative;
+}
+.metrics .pressure-summary::before {
+  content: "";
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: calc(58px * var(--text-scale));
+  background: #ffffff20;
+  pointer-events: none;
+}
 .humidity {
   margin-left: 28px;
   padding-left: 28px;
@@ -1719,6 +1734,10 @@ footer {
   .metrics .pressure-summary {
     gap: 3px;
     min-width: 0;
+  }
+  /* Portrait already stacks humidity beneath weather; keep it uncluttered. */
+  .metrics .pressure-summary::before {
+    display: none;
   }
   .pressure-headline {
     position: static;

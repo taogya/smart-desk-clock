@@ -127,6 +127,19 @@ fs.mkdirSync("artifacts", { recursive: true });
         readingCenter: (document.querySelector(".pressure-reading").getBoundingClientRect().left + document.querySelector(".pressure-reading").getBoundingClientRect().right) / 2,
         faceCenter: (document.querySelector(".pressure-face").getBoundingClientRect().left + document.querySelector(".pressure-face").getBoundingClientRect().right) / 2,
         trendRight: document.querySelector(".pressure-trend").getBoundingClientRect().right,
+        divider: (() => {
+          const el = document.querySelector(".pressure-summary");
+          const pseudo = getComputedStyle(el, "::before");
+          const rect = el.getBoundingClientRect();
+          const scale = rect.width / el.offsetWidth;
+          return {
+            display: pseudo.display,
+            color: pseudo.backgroundColor,
+            width: parseFloat(pseudo.width),
+            left: rect.left + parseFloat(pseudo.left) * scale,
+          };
+        })(),
+        humidityDividerColor: getComputedStyle(document.querySelector(".humidity")).borderLeftColor,
         conditionsRight: document.querySelector(".conditions").getBoundingClientRect().right,
         mainRight: p.right,
         forecastTop: document.querySelector(".forecast-panel").getBoundingClientRect().top,
@@ -152,6 +165,14 @@ fs.mkdirSync("artifacts", { recursive: true });
     );
     if (width > 700) {
       assert.ok(
+        pressureBounds.divider.display !== "none" &&
+          pressureBounds.divider.width === 1 &&
+          pressureBounds.divider.left > pressureBounds.humidityRight &&
+          pressureBounds.divider.left < pressureBounds.summaryLeft &&
+          pressureBounds.divider.color === pressureBounds.humidityDividerColor,
+        `pressure divider matches humidity divider, within the gap: ${JSON.stringify(pressureBounds)}`,
+      );
+      assert.ok(
         pressureBounds.readingLeft >= pressureBounds.humidityRight + 18,
         `landscape humidity and pressure have breathing room: ${JSON.stringify(pressureBounds)}`,
       );
@@ -164,6 +185,9 @@ fs.mkdirSync("artifacts", { recursive: true });
       pressureBounds.timelineTop - pressureBounds.forecastTop <= (height / 720) * 28 + 8,
       `forecast timeline starts near the panel top: ${JSON.stringify(pressureBounds)}`,
     );
+    if (width <= 700) {
+      assert.equal(pressureBounds.divider.display, "none");
+    }
     await page.screenshot({ path: `artifacts/clock-${name}.png` });
   }
   await page.setViewportSize({ width: 1024, height: 600 });
