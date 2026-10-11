@@ -1937,3 +1937,14 @@ footer {
   .date-weekday { font-size: calc(12px * var(--text-scale)); }
   .date-month-day { font-size: calc(20px * var(--text-scale)); }
 }
+
+/* Keep the primary clock inside the weather split on compact landscape devices. */
+@media (min-width: 701px) and (max-width: 1100px) {
+  .date-stack {
+    width: calc(126px * var(--text-scale));
+    flex-basis: calc(126px * var(--text-scale));
+  }
+  .date-month-day { font-size: calc(41px * var(--text-scale)); }
+  .date-year, .date-weekday { font-size: calc(23px * var(--text-scale)); }
+  .time-block .time-line { gap: calc(8px * var(--text-scale)); }
+}
