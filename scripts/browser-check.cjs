@@ -440,6 +440,9 @@ fs.mkdirSync("artifacts", { recursive: true });
 
   await page.unroute("https://api.open-meteo.com/**");
   await page.route("https://api.open-meteo.com/**", (r) => r.abort());
+  // Simulate cached weather older than the two-hour alert threshold.
+  // A just-refreshed cache should not create a banner on a single failed request.
+  await page.clock.setSystemTime(new Date("2026-10-06T09:15:00Z"));
   await page.reload();
   await page.waitForFunction(() =>
     document.querySelector("#status").textContent.includes("接続待ち"),
