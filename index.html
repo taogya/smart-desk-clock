@@ -9,7 +9,7 @@
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='%23edbe78'/%3E%3Cpath d='M32 15V32L44 39' fill='none' stroke='%23122c36' stroke-width='5'/%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./src/style.css?v=20261011-9" />
+    <link rel="stylesheet" href="./src/style.css?v=20261011-10" />
   </head>
   <body>
     <main class="clock" id="clock" data-night="true" data-weather="clear">
@@ -138,6 +138,8 @@
                 pathLength="1"
               />
               <line x1="24" x2="536" y1="98" y2="98" class="horizon" />
+              <defs><radialGradient id="sun-halo-gradient"><stop offset="0" stop-color="#f4d18e" stop-opacity=".78"/><stop offset=".55" stop-color="#ecc477" stop-opacity=".32"/><stop offset="1" stop-color="#ecc477" stop-opacity="0"/></radialGradient></defs>
+              <circle id="sun-glow" cx="24" cy="98" r="27" fill="url(#sun-halo-gradient)" visibility="hidden" />
               <circle id="sun-dot" cx="24" cy="98" r="8" />
             </svg>
             <div class="sun-labels">
@@ -153,7 +155,7 @@
               role="img"
               aria-label="月の満ち欠け"
             >
-              <circle r="1" fill="#ffffff18" />
+              <circle r="1" fill="#d6dedb24" stroke="#d9d9c76b" stroke-width=".04" />
               <path id="moon-light" fill="#eadfc6" />
             </svg>
             <div>
@@ -167,6 +169,14 @@
             >Weather by Open-Meteo ↗</a
           >
         </footer>
+      </section>
+      <section id="notice-banner" class="notice-banner" data-level="warning" role="status" aria-live="polite" hidden>
+        <svg class="notice-symbol" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3 2.5 20h19L12 3Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M12 9v5m0 3v.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <div class="notice-copy"><strong id="notice-title"></strong><span id="notice-detail"></span></div>
+        <button type="button" id="notice-dismiss" aria-label="通知を閉じる" title="通知を閉じる">×</button>
       </section>
       <aside class="forecast-panel" aria-label="過去3時間と未来21時間の天気">
         <div class="timeline" id="timeline">
@@ -256,6 +266,6 @@
         </p>
       </form>
     </dialog>
-    <script type="module" src="./src/app.js?v=20261011-3"></script>
+    <script type="module" src="./src/app.js?v=20261011-10"></script>
   </body>
 </html>

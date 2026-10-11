@@ -5,7 +5,7 @@ import {
   timelineWindow,
   TIMELINE_HOURS,
 } from "./domain.js?v=20261011-2";
-import { icon } from "./icons.js";
+import { icon, precipitationIcon } from "./icons.js?v=20261011-10";
 let previousData,
   previousZone,
   previousDay,
@@ -58,7 +58,10 @@ export function updateTimeline(data, now, zone) {
         if (typeof chance === "number" && chance > 0) {
           const rain = document.createElement("span");
           rain.className = "rain-chance";
-          rain.textContent = `${chance}%`;
+          rain.innerHTML = precipitationIcon();
+          const label = document.createElement("span");
+          label.textContent = `${chance}%`;
+          rain.append(label);
           row.append(rain);
         }
         row.setAttribute(

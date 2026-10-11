@@ -104,3 +104,23 @@ test("pressure faces use filled discs and distinct expressions for each outlook"
   }
   assert.equal(new Set(faces).size, 4);
 });
+
+test("precipitation icon shows rain under a cloud", async () => {
+  const { precipitationIcon } = await import("../src/icons.js");
+  assert.match(precipitationIcon(), /viewBox="0 0 24 24"/);
+  assert.match(precipitationIcon(), /m8 19-1 2/);
+});
+test("weather notification escalates at 30m / 2h without hiding valid fresh data", async () => {
+  const { weatherNotice } = await import("../src/notifications.js");
+  const t = 1_800_000_000_000;
+  const args = { now:t, updated:t, failed:false, locationKey:"sendai", formattedTime:"12:30" };
+  assert.equal(weatherNotice(args), null);
+  assert.equal(weatherNotice({...args, failed:true, now:t+29*60000}), null);
+  const warning = weatherNotice({...args, now:t+30*60000});
+  assert.equal(warning.level, "warning");
+  const error = weatherNotice({...args, now:t+120*60000});
+  assert.equal(error.level, "error");
+  assert.notEqual(warning.key, error.key);
+  assert.equal(weatherNotice({...args, updated:null, failed:false}), null);
+  assert.equal(weatherNotice({...args, updated:null, failed:true}).level, "error");
+});

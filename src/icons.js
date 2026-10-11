@@ -43,3 +43,8 @@ export function pressureFace(level) {
   }
   return `<svg viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><circle class="face-disc" cx="32" cy="32" r="22"/><g class="face-features">${face}</g></svg>`;
 }
+
+/** Rainy cloud, distinct from the humidity drop. */
+export function precipitationIcon() {
+  return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17h10a4 4 0 0 0 .1-8 5.5 5.5 0 0 0-10.5-.5A4.3 4.3 0 0 0 7 17Z"/><path d="m8 19-1 2m6-2-1 2m6-2-1 2"/></svg>';
+}

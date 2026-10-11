@@ -8,9 +8,10 @@ import {
   number,
   pressureSignal,
 } from "./domain.js?v=20261011-2";
-import { icon, pressureFace } from "./icons.js?v=20261011-3";
+import { icon, pressureFace } from "./icons.js?v=20261011-10";
 import { updateTimeline } from "./timeline.js?v=20261011-2";
 import { read, save, cacheKey, forecast, searchCities } from "./api.js";
+import { createNoticeCenter, weatherNotice } from "./notifications.js?v=20261011-10";
 const $ = (id) => document.getElementById(id);
 let location = read("utsuroi-location") ?? DEFAULT_LOCATION;
 try {
@@ -30,6 +31,10 @@ let activeRequest = null,
   lastDay = "",
   lastMinute = "",
   failed = false;
+const notifier = createNoticeCenter({
+  banner: $("notice-banner"), title: $("notice-title"),
+  detail: $("notice-detail"), close: $("notice-dismiss"),
+});
 let sunAnimationFrame = 0,
   sunDisplayedP = 0,
   sunTargetP = null,
@@ -41,9 +46,12 @@ function sunPoint(p) {
 }
 function applySunPosition(p, daytime) {
   const point = sunPoint(p);
-  $("sun-dot").setAttribute("cx", point.x);
-  $("sun-dot").setAttribute("cy", point.y);
+  for (const id of ["sun-dot", "sun-glow"]) {
+    $(id).setAttribute("cx", point.x);
+    $(id).setAttribute("cy", point.y);
+  }
   $("sun-dot").style.opacity = daytime ? 1 : 0;
+  $("sun-glow").setAttribute("visibility", daytime ? "visible" : "hidden");
   $("sun-progress").style.strokeDasharray = `${daytime ? p : 0} 1`;
 }
 function stopSunCatchUp() {
@@ -151,6 +159,11 @@ function formatTime(epoch) {
 function status() {
   const age = updated ? Date.now() - updated : Infinity;
   const stale = age > 1800000;
+  notifier.update(weatherNotice({
+    now: Date.now(), updated, failed,
+    locationKey: cacheKey(location),
+    formattedTime: updated ? formatTime(updated / 1000) : "",
+  }));
   $("status").textContent = updated
     ? `${failed || stale ? "保存済み · " : ""}${formatTime(updated / 1000)} 更新${failed ? " · 接続待ち" : ""}`
     : failed
@@ -328,6 +341,7 @@ $("search-form").onsubmit = async (event) => {
         data = cached?.data ?? null;
         updated = cached?.updated ?? null;
         failed = false;
+        notifier.update(null);
         lastDay = "";
         lastMinute = "";
         resetSunMotion();

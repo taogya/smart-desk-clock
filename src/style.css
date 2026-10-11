@@ -399,8 +399,8 @@ button {
   stroke-dasharray: 3 6;
 }
 .orbit-progress {
-  stroke: #e8be7977;
-  stroke-width: 1.5;
+  stroke: #e8be79bb;
+  stroke-width: 1.8;
   fill: none;
   stroke-dasharray: 0 1;
 }
@@ -410,6 +410,15 @@ button {
 #sun-dot {
   fill: var(--accent);
   filter: drop-shadow(0 0 8px #efc77b);
+}
+#sun-glow {
+  opacity: .42;
+  animation: sun-glow-breathe 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes sun-glow-breathe {
+  0%, 100% { opacity: .24; }
+  50% { opacity: .75; }
 }
 .sun-labels {
   display: flex;
@@ -505,13 +514,13 @@ footer a {
   white-space: nowrap;
 }
 .pressure-reading b {
-  font-size: 28px;
+  font-size: 34px;
   font-weight: 400;
   letter-spacing: -0.03em;
 }
 .pressure-reading small {
   margin-left: 4px;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 .pressure-trend {
@@ -611,6 +620,17 @@ footer a {
   position: absolute;
   right: 0;
   top: 26px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+.hour-row .rain-chance svg {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  color: inherit;
+  flex: 0 0 auto;
 }
 .now-marker {
   position: absolute;
@@ -748,6 +768,49 @@ input {
   to {
     background-position: -120px 180px;
   }
+}
+/* Floating status banner, independent from the auto-hidden header. */
+.notice-banner {
+  position: absolute;
+  z-index: 4;
+  top: 65px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(430px, calc(100% - 36px));
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 12px 14px;
+  box-sizing: border-box;
+  border: 1px solid #d5be7c70;
+  border-radius: 20px;
+  background: #203945ed;
+  color: #f3efe6;
+  box-shadow: 0 8px 28px #081a2655;
+  font-size: 14px;
+}
+.notice-banner[hidden] { display: none; }
+.notice-banner[data-level="error"] { border-color: #c98e88a0; }
+.notice-banner .notice-symbol { width: 23px; height: 23px; flex: 0 0 23px; color: #e0c17b; }
+.notice-banner[data-level="error"] .notice-symbol { color: #d99a90; }
+.notice-copy { min-width: 0; display: flex; flex: 1; flex-direction: column; gap: 3px; }
+.notice-copy strong { font-size: 14px; font-weight: 500; }
+.notice-copy span { font-size: 11px; color: #c5d4d7; }
+#notice-dismiss {
+  flex: 0 0 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #ffffff13;
+  color: #e6ebeb;
+  font-size: 23px;
+  line-height: 1;
+  cursor: pointer;
+}
+#notice-dismiss:focus-visible { outline: 2px solid #ead0a1; outline-offset: 2px; }
+@media (max-width: 700px) and (orientation: portrait) {
+  .notice-banner { top: 133px; width: calc(100% - 16px); padding: 10px; border-radius: 16px; gap: 7px; }
+  .notice-copy strong { font-size: 12px; }
+  .notice-copy span { font-size: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -1223,6 +1286,7 @@ footer {
 }
 .moon-section #moon-light {
   transition: fill 3s;
+  filter: drop-shadow(0 0 3px #e8d5a37d);
 }
 .display-options {
   border: 0;
@@ -1619,10 +1683,10 @@ footer {
   margin-top: calc(20px - (var(--text-scale) - 1) * 50px);
 }
 .pressure-reading b {
-  font-size: calc(28px * var(--text-scale));
+  font-size: calc(34px * var(--text-scale));
 }
 .pressure-reading small {
-  font-size: calc(12px * var(--text-scale));
+  font-size: calc(14px * var(--text-scale));
 }
 .pressure-trend {
   font-size: calc(28px * var(--text-scale));

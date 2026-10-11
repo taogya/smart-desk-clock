@@ -82,6 +82,11 @@ fs.mkdirSync("artifacts", { recursive: true });
     () => document.querySelector("#temperature").textContent === "19",
   );
   assert.equal(await page.locator("#time").textContent(), "20:23");
+  assert.equal(await page.locator("#sun-glow").count(), 1);
+  assert.equal(await page.locator("#moon circle[stroke]").count(), 1);
+  assert.equal(await page.locator("#notice-banner").isVisible(), false);
+  assert.ok(await page.locator(".rain-chance svg").count() > 0);
+  assert.ok(await page.locator("#pressure-value").evaluate(el => parseFloat(getComputedStyle(el).fontSize)) >= 30);
   for (const [width, height, name] of [
     [1280, 720, "night"],
     [1024, 600, "7inch"],
@@ -412,6 +417,14 @@ fs.mkdirSync("artifacts", { recursive: true });
   const sunMidP = (sunMid.cx - 24) / 512;
   const expectedArcY = 98 - 332 * sunMidP * (1 - sunMidP);
   assert.equal(sunMid.catching, true);
+  const halo = await page.locator("#sun-glow").evaluate(el => ({
+    cx: +el.getAttribute("cx"),
+    cy: +el.getAttribute("cy"),
+    animation: getComputedStyle(el).animationName,
+  }));
+  assert.equal(halo.cx, sunMid.cx);
+  assert.equal(halo.cy, sunMid.cy);
+  assert.equal(halo.animation, "sun-glow-breathe");
   assert.ok(
     Math.abs(sunMid.cy - expectedArcY) < 0.6,
     `sun stays on arc while catching up: ${JSON.stringify({ sunMid, expectedArcY })}`,
@@ -432,6 +445,15 @@ fs.mkdirSync("artifacts", { recursive: true });
     document.querySelector("#status").textContent.includes("接続待ち"),
   );
   assert.equal(await page.locator("#temperature").textContent(), "19");
+  assert.equal(await page.locator("#notice-banner").isVisible(), true);
+  assert.equal(await page.locator("#notice-banner").getAttribute("data-level"), "error");
+  await page.locator("#notice-dismiss").click();
+  assert.equal(await page.locator("#notice-banner").isVisible(), false);
+  await page.clock.runFor(1200);
+  assert.equal(await page.locator("#notice-banner").isVisible(), false);
+  await page.reload();
+  await page.waitForFunction(() => document.querySelector("#status").textContent.includes("接続待ち"));
+  assert.equal(await page.locator("#notice-banner").isVisible(), false);
   assert.deepEqual(errors, []);
   console.log(
     "Passed: responsive viewports, settings persistence, location search, midnight continuity, fixed now marker, offline cache, day/night.",
