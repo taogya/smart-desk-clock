@@ -271,12 +271,17 @@ function tick() {
   $("time").dateTime = now.toISOString();
   $("seconds").textContent = p.second;
   $("seconds-fill").style.width = `${(+p.second / 59) * 100}%`;
-  $("date").textContent = new Intl.DateTimeFormat("ja-JP", {
+  const dateParts = new Intl.DateTimeFormat("ja-JP", {
     timeZone: location.timezone,
-    month: "long",
+    year: "numeric",
+    month: "numeric",
     day: "numeric",
     weekday: "long",
-  }).format(now);
+  }).formatToParts(now);
+  const value = (type) => dateParts.find((part) => part.type === type)?.value ?? "--";
+  $("date-year").textContent = value("year");
+  $("date-month-day").textContent = `${value("month")}/${value("day")}`;
+  $("date-weekday").textContent = value("weekday");
   updateTimeline(data, now, location.timezone);
 
   if (lastMinute !== `${p.key}:${p.hour}:${p.minute}`) {

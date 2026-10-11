@@ -1893,3 +1893,47 @@ footer {
       0 0 12px #f3cb8280;
   }
 }
+
+/* Date and time share a single vertical band. Date occupies roughly two time digits. */
+.time-block .time-line {
+  display: flex;
+  align-items: center;
+  gap: calc(15px * var(--text-scale));
+}
+.date-stack {
+  box-sizing: border-box;
+  width: calc(205px * var(--text-scale));
+  flex: 0 0 calc(205px * var(--text-scale));
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(162px * var(--text-scale));
+  line-height: 1;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: #e0e8e3;
+  letter-spacing: 0;
+}
+.date-year,
+.date-weekday {
+  font-size: calc(28px * var(--text-scale));
+  color: var(--muted);
+  font-weight: 400;
+}
+.date-month-day {
+  font-size: calc(61px * var(--text-scale));
+  letter-spacing: -0.055em;
+  font-weight: 400;
+}
+@media (max-width: 700px) and (orientation: portrait) {
+  .time-block .time-line { gap: 4px; }
+  .date-stack {
+    width: calc(65px * var(--text-scale));
+    flex-basis: calc(65px * var(--text-scale));
+    height: calc(62px * var(--text-scale));
+  }
+  .date-year,
+  .date-weekday { font-size: calc(12px * var(--text-scale)); }
+  .date-month-day { font-size: calc(20px * var(--text-scale)); }
+}

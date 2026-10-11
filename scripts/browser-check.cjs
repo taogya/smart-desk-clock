@@ -82,6 +82,9 @@ fs.mkdirSync("artifacts", { recursive: true });
     () => document.querySelector("#temperature").textContent === "19",
   );
   assert.equal(await page.locator("#time").textContent(), "20:23");
+  assert.equal(await page.locator("#date-year").textContent(), "2026");
+  assert.equal(await page.locator("#date-month-day").textContent(), "10/5");
+  assert.equal(await page.locator("#date-weekday").textContent(), "月曜日");
   assert.equal(await page.locator("#sun-glow").count(), 1);
   assert.equal(await page.locator("#moon circle[stroke]").count(), 1);
   assert.equal(await page.locator("#notice-banner").isVisible(), false);
@@ -106,6 +109,20 @@ fs.mkdirSync("artifacts", { recursive: true });
         box.bottom <= innerHeight + 1
       );
     });
+    const dateRow = await page.evaluate(() => {
+      const date = document.getElementById("date").getBoundingClientRect();
+      const time = document.getElementById("time").getBoundingClientRect();
+      const panel = document.querySelector(".main-panel").getBoundingClientRect();
+      return { dateLeft: date.left, dateRight: date.right,
+        dateTop: date.top, dateBottom: date.bottom, timeLeft: time.left,
+        timeTop: time.top, timeBottom: time.bottom, panelRight: panel.right };
+    });
+    assert.ok(dateRow.dateRight <= dateRow.timeLeft + 1,
+      `date stays to the left of time: ${JSON.stringify(dateRow)}`);
+    assert.ok(dateRow.dateTop >= dateRow.timeTop - 12 && dateRow.dateBottom <= dateRow.timeBottom + 12,
+      `date shares time vertical band: ${JSON.stringify(dateRow)}`);
+    assert.ok(dateRow.timeLeft < dateRow.panelRight,
+      `time must remain inside main panel: ${JSON.stringify(dateRow)}`);
     const box = await page.locator("#clock").boundingBox();
     assert.ok(
       box.x >= -1 && box.y >= -1 && box.x + box.width <= width + 1,
