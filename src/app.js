@@ -132,17 +132,34 @@ function resetSunMotion() {
   sunDayKey = null;
   applySunPosition(0, false);
 }
+function fitTime() {
+  const line = document.querySelector(".time-line");
+  const panel = document.querySelector(".main-panel");
+  // Measure the complete date, time and seconds at the selected size.
+  // Zoom participates in layout, unlike transform: scale(), so the seconds
+  // progress track and the following sections are positioned correctly.
+  line.style.zoom = "1";
+  const style = getComputedStyle(panel);
+  const available = panel.clientWidth -
+    parseFloat(style.paddingLeft) - parseFloat(style.paddingRight) - 4;
+  const needed = line.getBoundingClientRect().width /
+    (parseFloat($("clock").style.transform.match(/scale\(([^)]+)/)?.[1]) || 1);
+  const ratio = Math.min(1, Math.max(0.35, available / Math.max(needed, 1)));
+  line.style.zoom = String(ratio);
+}
 function fit() {
   if (innerWidth <= 700 && innerHeight > innerWidth) {
     $("clock").style.transform = "";
     document.body.style.height = "";
     document.body.style.overflow = "";
+    fitTime();
     return;
   }
   const scale = Math.min(innerWidth / 1280, innerHeight / 720);
   $("clock").style.transform = `scale(${scale})`;
   document.body.style.height = `${innerHeight}px`;
   document.body.style.overflow = "hidden";
+  fitTime();
 }
 addEventListener("resize", fit);
 fit();
@@ -271,6 +288,8 @@ function tick() {
   $("time").dateTime = now.toISOString();
   $("seconds").textContent = p.second;
   $("seconds-fill").style.width = `${(+p.second / 59) * 100}%`;
+  // Re-evaluate when clock glyph widths change (for example 11:11 -> 11:12).
+  fitTime();
   const dateParts = new Intl.DateTimeFormat("ja-JP", {
     timeZone: location.timezone,
     year: "numeric",
@@ -405,6 +424,7 @@ function applyDisplay() {
       ),
     );
   save("utsuroi-display", display);
+  fitTime();
 }
 $("text-size").oninput = () => {
   display.textSize = +$("text-size").value;
@@ -438,6 +458,7 @@ addEventListener("pointermove", revealControls, { passive: true });
 addEventListener("pointerdown", revealControls, { passive: true });
 addEventListener("keydown", revealControls);
 applyDisplay();
+document.fonts?.ready.then(fitTime);
 revealControls();
 tick();
 loadWeather();
