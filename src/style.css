@@ -46,6 +46,45 @@ input:focus-visible {
   --muted: #b6c7c7;
   transition: background 3s;
 }
+/* Day and night overlays darken the continuous sky toward the forecast,
+   rather than placing an opaque rectangular panel over it. */
+.clock::before,
+.clock::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 6s linear;
+}
+.clock::before {
+  background: linear-gradient(
+    to right,
+    transparent 65%,
+    #071a2429 80%,
+    #071a2480 100%
+  );
+}
+.clock::after {
+  background: linear-gradient(
+    to right,
+    transparent 65%,
+    #05131c14 80%,
+    #05131c5c 100%
+  );
+  opacity: 0;
+}
+.clock[data-night="true"]::before {
+  opacity: 0;
+}
+.clock[data-night="true"]::after {
+  opacity: 1;
+}
+.clock > .main-panel,
+.clock > .forecast-panel {
+  position: relative;
+  z-index: 1;
+}
 .clock[data-night="true"] {
   background: #102630;
 }
@@ -436,8 +475,8 @@ footer a {
   text-decoration: none;
 }
 .forecast-panel {
-  background: #091e2980;
-  border-left: 1px solid #ffffff12;
+  background: transparent;
+  border-left: 0;
   padding: 39px 26px 26px 25px;
   display: flex;
   flex-direction: column;
@@ -1041,7 +1080,6 @@ footer {
 }
 .forecast-panel {
   padding: 4px 23px 22px;
-  background: #081e298c;
 }
 .forecast-heading {
   font-size: 24px;

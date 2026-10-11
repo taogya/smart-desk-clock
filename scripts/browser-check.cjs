@@ -203,6 +203,29 @@ fs.mkdirSync("artifacts", { recursive: true });
       pressureBounds.timelineTop - pressureBounds.forecastTop <= (height / 720) * 28 + 8,
       `forecast timeline starts near the panel top: ${JSON.stringify(pressureBounds)}`,
     );
+    const skyBlend = await page.evaluate(() => {
+      const root = document.getElementById("clock");
+      const panel = document.querySelector(".forecast-panel");
+      const before = getComputedStyle(root, "::before");
+      const after = getComputedStyle(root, "::after");
+      const panelStyle = getComputedStyle(panel);
+      return {
+        panelBackground: panelStyle.backgroundColor,
+        panelBorder: panelStyle.borderLeftWidth,
+        dayGradient: before.backgroundImage,
+        nightGradient: after.backgroundImage,
+        overlayZ: before.zIndex,
+        overlayPointerEvents: before.pointerEvents,
+        panelZ: panelStyle.zIndex,
+      };
+    });
+    assert.equal(skyBlend.panelBackground, "rgba(0, 0, 0, 0)");
+    assert.equal(skyBlend.panelBorder, "0px");
+    assert.match(skyBlend.dayGradient, /linear-gradient/);
+    assert.match(skyBlend.nightGradient, /linear-gradient/);
+    assert.equal(skyBlend.overlayZ, "0");
+    assert.equal(skyBlend.panelZ, "1");
+    assert.equal(skyBlend.overlayPointerEvents, "none");
     if (width <= 700) {
       assert.equal(pressureBounds.divider.display, "none");
     }
